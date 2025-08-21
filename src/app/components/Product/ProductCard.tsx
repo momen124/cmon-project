@@ -1,9 +1,7 @@
-
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
-
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { Product } from '@/app/types';
@@ -28,12 +26,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, product.sizes[0].name, product.colors[0], 1);
+    // Fixed: Use the correct structure from your types
+    addToCart(product, product.sizes[0]?.name || 'Standard', product.colors[0], 1);
   };
 
   return (
     <Link href={`/${language}/product/${product.id}`}>
-      <div className="group bg-card-bg-color rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-border">
+      <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
         {/* Product Image */}
         <div className="relative aspect-square bg-gradient-to-br from-sand-beige-100 to-sand-beige-200 flex items-center justify-center overflow-hidden">
           <div className="text-6xl opacity-60">🛏️</div>
