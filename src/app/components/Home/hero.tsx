@@ -3,7 +3,7 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
-import { useStore } from '@/app/store/useStore';
+import { useStore } from '@/store/useStore';
 
 const Hero: React.FC = () => {
   const { language } = useStore();

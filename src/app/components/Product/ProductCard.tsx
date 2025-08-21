@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import { Product } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
+import { Product } from '@/types';
+import { useStore } from '@/store/useStore';
 
 interface ProductCardProps {
   product: Product;

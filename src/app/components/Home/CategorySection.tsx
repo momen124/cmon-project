@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/app/store/useStore';
-import { categories } from '@/app/data/mockData';
+import { useStore } from '@/store/useStore';
+import { categories } from '@/data/mockData';
+
 
 const CategorySection: React.FC = () => {
   const { language } = useStore();

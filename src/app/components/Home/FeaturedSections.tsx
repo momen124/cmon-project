@@ -3,9 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useStore } from '@/app/store/useStore';
-import { products } from '@/app/data/mockData';
+
 import ProductCard from '../Product/ProductCard';
+import { useStore } from '@/store/useStore';
+import { products } from '@/data/mockData';
 
 const FeaturedSections: React.FC = () => {
   const { language } = useStore();
