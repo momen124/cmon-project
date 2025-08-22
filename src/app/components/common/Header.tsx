@@ -99,7 +99,6 @@ const Header: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${language}`} className="flex items-center space-x-2 hover-lift" title={t('home')}>
-              <Image src={""} alt="Cmon Elsonon logo" className="h-16 w-auto" width={64} height={64} />
               <span className="text-3xl font-bold text-egyptian-blue-600 font-english">Cmon Elsonon</span>
             </Link>
 

@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 const Cart: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { cart, updateQuantity, removeFromCart, language, currency } = useStore();
+  const { cart, updateQuantity, removeFromCart, clearCart, language, currency } = useStore();
   const isRTL = language === 'ar';
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -33,6 +33,13 @@ const Cart: React.FC = () => {
     toast.success(t('removedFromCart'));
   };
 
+  const handleClearCart = () => {
+    if (window.confirm(t('confirmClearCart'))) {
+      clearCart();
+      toast.success(t('cartCleared'));
+    }
+  };
+
   if (cart.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center bg-cream-white-50 animate-slide-up">
@@ -51,11 +58,22 @@ const Cart: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 bg-cream-white-50 animate-slide-up">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-deep-navy-900 mb-2 font-english">{t('shoppingCart')}</h1>
-        <p className="text-sand-beige-600 font-english">
-          {cart.length} {cart.length === 1 ? t('item') : t('items')} {t('inYourCart')}
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-deep-navy-900 mb-2 font-english">{t('shoppingCart')}</h1>
+          <p className="text-sand-beige-600 font-english">
+            {cart.length} {cart.length === 1 ? t('item') : t('items')} {t('inYourCart')}
+          </p>
+        </div>
+        
+        {/* Clear Cart Button */}
+        <button
+          onClick={handleClearCart}
+          className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors border border-red-200 hover:border-red-300 font-english"
+        >
+          <TrashIcon className="w-5 h-5" />
+          {t('clearCart')}
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
