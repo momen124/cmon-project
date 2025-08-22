@@ -22,7 +22,7 @@ const ProductDetail: React.FC = () => {
   const isInWishlist = product ? wishlist.includes(product.id) : false;
 
   if (!product) {
-    return <div className="text-center py-20 text-deep-navy-900 font-english">Product not found</div>;
+    return <div className="text-center py-20 text-text-primary-600 font-english">Product not found</div>;
   }
 
   const formatPrice = (price: number) => {
@@ -59,11 +59,11 @@ const ProductDetail: React.FC = () => {
     : 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-cream-white-50 animate-slide-up">
+    <div className="container mx-auto px-4 py-8 bg-primary-50 animate-slide-up">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Image Gallery */}
         <div className="space-y-4">
-          <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-sand-beige-100 to-sand-beige-200">
+          <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-200">
             <img
               src={selectedColor ? selectedColor.image : product.images[activeImageIndex]}
               alt={isRTL ? product.nameAr : product.name}
@@ -76,7 +76,7 @@ const ProductDetail: React.FC = () => {
                 key={index}
                 onClick={() => setActiveImageIndex(index)}
                 className={`aspect-square overflow-hidden rounded-lg border-2 hover-lift ${
-                  activeImageIndex === index ? 'border-egyptian-blue-600' : 'border-sand-beige-200'
+                  activeImageIndex === index ? 'border-text-primary-600' : 'border-neutral-200'
                 }`}
               >
                 <img
@@ -92,10 +92,10 @@ const ProductDetail: React.FC = () => {
         {/* Product Information */}
         <div className="space-y-6">
           <div>
-            <p className="text-sm text-sand-beige-600 mb-2 font-english">
+            <p className="text-sm text-neutral-600 mb-2 font-english">
               {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
             </p>
-            <h1 className="text-3xl font-bold text-deep-navy-900 mb-4 font-english">
+            <h1 className="text-3xl font-bold text-text-primary-600 mb-4 font-english">
               {isRTL ? product.nameAr : product.name}
             </h1>
 
@@ -106,27 +106,27 @@ const ProductDetail: React.FC = () => {
                   <StarIcon
                     key={i}
                     className={`w-5 h-5 ${
-                      i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-sand-beige-300'
+                      i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-neutral-300'
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-sm text-sand-beige-600 font-english">
+              <span className="text-sm text-neutral-600 font-english">
                 {product.rating} ({product.reviewCount} {t('reviews')})
               </span>
             </div>
 
             {/* Price */}
             <div className="flex items-center space-x-4 mb-6">
-              <span className="text-3xl font-bold text-deep-navy-900 font-english">
+              <span className="text-3xl font-bold text-text-primary-600 font-english">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
                 <>
-                  <span className="text-xl text-sand-beige-500 line-through font-english">
+                  <span className="text-xl text-neutral-500 line-through font-english">
                     {formatPrice(product.originalPrice)}
                   </span>
-                  <span className="bg-gold-accent-500 text-deep-navy-900 text-sm px-2 py-1 rounded-full font-english">
+                  <span className="bg-accent-500 text-text-primary-600 text-sm px-2 py-1 rounded-full font-english">
                     {discountPercentage}% OFF
                   </span>
                 </>
@@ -136,34 +136,34 @@ const ProductDetail: React.FC = () => {
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-deep-navy-900 mb-2 font-english">{t('description')}</h3>
-            <p className="text-sand-beige-600 font-english">
+            <h3 className="text-lg font-semibold text-text-primary-600 mb-2 font-english">{t('description')}</h3>
+            <p className="text-neutral-600 font-english">
               {isRTL ? product.descriptionAr : product.description}
             </p>
           </div>
 
           {/* Color Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-deep-navy-900 mb-3 font-english">{t('selectColor')}</h3>
+            <h3 className="text-lg font-semibold text-text-primary-600 mb-3 font-english">{t('selectColor')}</h3>
             <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
               {product.colors.map((color, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedColor(color)}
                   className={`relative w-12 h-12 rounded-full border-4 hover-lift ${
-                    selectedColor?.name === color.name ? 'border-egyptian-blue-600' : 'border-sand-beige-200'
+                    selectedColor?.name === color.name ? 'border-text-primary-600' : 'border-neutral-200'
                   }`}
                   style={{ backgroundColor: color.hex }}
                   title={isRTL ? color.nameAr : color.name}
                 >
                   {selectedColor?.name === color.name && (
-                    <div className="absolute inset-0 rounded-full border-2 border-cream-white-50" />
+                    <div className="absolute inset-0 rounded-full border-2 border-primary-50" />
                   )}
                 </button>
               ))}
             </div>
             {selectedColor && (
-              <p className="text-sm text-sand-beige-600 mt-2 font-english">
+              <p className="text-sm text-neutral-600 mt-2 font-english">
                 {isRTL ? selectedColor.nameAr : selectedColor.name}
               </p>
             )}
@@ -171,7 +171,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Size Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-deep-navy-900 mb-3 font-english">{t('selectSize')}</h3>
+            <h3 className="text-lg font-semibold text-text-primary-600 mb-3 font-english">{t('selectSize')}</h3>
             <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'grid-cols-2-reverse' : ''}`}>
               {product.sizes.map((size) => (
                 <button
@@ -179,12 +179,12 @@ const ProductDetail: React.FC = () => {
                   onClick={() => setSelectedSize(size)}
                   className={`py-2 px-4 border rounded-lg text-center transition-colors hover-lift flex flex-col items-center font-english ${
                     selectedSize?.name === size.name
-                      ? 'border-egyptian-blue-600 bg-egyptian-blue-600 text-cream-white-50'
-                      : 'border-sand-beige-200 hover:border-gold-accent-500'
+                      ? 'border-text-primary-600 bg-text-primary-600 text-primary-50'
+                      : 'border-neutral-200 hover:border-accent-500'
                   }`}
                 >
                   <span className="font-medium">{size.name}</span>
-                  <span className="text-xs text-sand-beige-600">{size.cm} cm</span>
+                  <span className="text-xs text-neutral-600">{size.cm} cm</span>
                 </button>
               ))}
             </div>
@@ -192,20 +192,20 @@ const ProductDetail: React.FC = () => {
 
           {/* Quantity */}
           <div>
-            <h3 className="text-lg font-semibold text-deep-navy-900 mb-3 font-english">{t('quantity')}</h3>
+            <h3 className="text-lg font-semibold text-text-primary-600 mb-3 font-english">{t('quantity')}</h3>
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-2 border border-sand-beige-200 rounded-lg hover:bg-sand-beige-100 hover-lift"
+                className="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-100 hover-lift"
               >
                 -
               </button>
-              <span className="px-4 py-2 border border-sand-beige-200 rounded-lg min-w-[3rem] text-center text-deep-navy-900 font-english">
+              <span className="px-4 py-2 border border-neutral-200 rounded-lg min-w-[3rem] text-center text-text-primary-600 font-english">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="p-2 border border-sand-beige-200 rounded-lg hover:bg-sand-beige-100 hover-lift"
+                className="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-100 hover-lift"
               >
                 +
               </button>
@@ -225,52 +225,52 @@ const ProductDetail: React.FC = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="flex-1 bg-egyptian-blue-600 text-cream-white-50 py-3 px-6 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors disabled:bg-sand-beige-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover-lift font-english"
+              className="flex-1 bg-text-primary-600 text-primary-50 py-3 px-6 rounded-lg hover:bg-accent-500 hover:text-text-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover-lift font-english"
             >
               <ShoppingBagIcon className="w-5 h-5" />
               <span>{t('addToCart')}</span>
             </button>
             <button
               onClick={handleWishlistToggle}
-              className="p-3 border border-sand-beige-200 rounded-lg hover:bg-sand-beige-100 transition-colors hover-lift"
+              className="p-3 border border-neutral-200 rounded-lg hover:bg-neutral-100 transition-colors hover-lift"
             >
               {isInWishlist ? (
                 <HeartIconSolid className="w-6 h-6 text-red-500" />
               ) : (
-                <HeartIcon className="w-6 h-6 text-sand-beige-600" />
+                <HeartIcon className="w-6 h-6 text-neutral-600" />
               )}
             </button>
           </div>
 
           {/* Features */}
-          <div className="space-y-3 pt-6 border-t border-sand-beige-200">
+          <div className="space-y-3 pt-6 border-t border-neutral-200">
             <div className="flex items-center space-x-3">
-              <TruckIcon className="w-5 h-5 text-sand-beige-600" />
-              <span className="text-sm text-sand-beige-600 font-english">Free shipping on orders over 1000 EGP</span>
+              <TruckIcon className="w-5 h-5 text-neutral-600" />
+              <span className="text-sm text-neutral-600 font-english">Free shipping on orders over 1000 EGP</span>
             </div>
             <div className="flex items-center space-x-3">
-              <ShieldCheckIcon className="w-5 h-5 text-sand-beige-600" />
-              <span className="text-sm text-sand-beige-600 font-english">30-day return policy</span>
+              <ShieldCheckIcon className="w-5 h-5 text-neutral-600" />
+              <span className="text-sm text-neutral-600 font-english">30-day return policy</span>
             </div>
           </div>
 
           {/* Specifications */}
-          <div className="space-y-3 pt-6 border-t border-sand-beige-200">
-            <h3 className="text-lg font-semibold text-deep-navy-900 mb-4 font-english">{t('specifications')}</h3>
+          <div className="space-y-3 pt-6 border-t border-neutral-200">
+            <h3 className="text-lg font-semibold text-text-primary-600 mb-4 font-english">{t('specifications')}</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sand-beige-600 font-english">{t('material')}</span>
-                <span className="font-medium text-deep-navy-900 font-english">{isRTL ? product.materialAr : product.material}</span>
+                <span className="text-neutral-600 font-english">{t('material')}</span>
+                <span className="font-medium text-text-primary-600 font-english">{isRTL ? product.materialAr : product.material}</span>
               </div>
               {product.threadCount && (
                 <div className="flex justify-between">
-                  <span className="text-sand-beige-600 font-english">{t('threadCount')}</span>
-                  <span className="font-medium text-deep-navy-900 font-english">{product.threadCount}</span>
+                  <span className="text-neutral-600 font-english">{t('threadCount')}</span>
+                  <span className="font-medium text-text-primary-600 font-english">{product.threadCount}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-sand-beige-600 font-english">{t('careInstructions')}</span>
-                <span className="font-medium text-deep-navy-900 font-english">{isRTL ? product.careInstructionsAr : product.careInstructions}</span>
+                <span className="text-neutral-600 font-english">{t('careInstructions')}</span>
+                <span className="font-medium text-text-primary-600 font-english">{isRTL ? product.careInstructionsAr : product.careInstructions}</span>
               </div>
             </div>
           </div>

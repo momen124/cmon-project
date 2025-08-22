@@ -62,10 +62,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
     : 0;
 
   return (
-    <div className="group bg-cream-white-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-sand-beige-200 animate-slide-up">
+    <div className="group bg-primary-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-neutral-200 animate-slide-up">
       <div className="flex p-4">
         {/* Product Image */}
-        <div className="flex-shrink-0 w-48 h-48 relative overflow-hidden rounded-lg bg-gradient-to-br from-sand-beige-100 to-sand-beige-200">
+        <div className="flex-shrink-0 w-48 h-48 relative overflow-hidden rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-200">
           <Link to={`/product/${product.id}`}>
             <img
               src={product.images[0] || "/placeholder.svg"}
@@ -82,7 +82,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               </span>
             )}
             {discountPercentage > 0 && (
-              <span className="bg-gold-accent-500 text-deep-navy-900 text-xs px-2 py-1 rounded-full font-english">
+              <span className="bg-accent-500 text-text-primary-600 text-xs px-2 py-1 rounded-full font-english">
                 {discountPercentage}% {t('off')}
               </span>
             )}
@@ -94,28 +94,28 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           <div>
             <div className="flex items-start justify-between mb-1">
               <div>
-                <div className="text-sm text-sand-beige-600 mb-2 font-english">
+                <div className="text-sm text-neutral-600 mb-2 font-english">
                   {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
                 </div>
                 <Link to={`/product/${product.id}`}>
-                  <h3 className="text-xl font-bold text-deep-navy-900 mb-4 group-hover:text-egyptian-blue-600 transition-colors font-english">
+                  <h3 className="text-xl font-bold text-text-primary-600 mb-4 group-hover:text-text-primary-600 transition-colors font-english">
                     {isRTL ? product.nameAr : product.name}
                   </h3>
                 </Link>
               </div>
               <button
                 onClick={handleWishlistToggle}
-                className={`p-3 border border-sand-beige-200 rounded-lg hover:bg-sand-beige-100 transition-colors hover-lift ${isRTL ? 'ml-2' : 'mr-2'}`}
+                className={`p-3 border border-neutral-200 rounded-lg hover:bg-neutral-100 transition-colors hover-lift ${isRTL ? 'ml-2' : 'mr-2'}`}
               >
                 {isInWishlist ? (
                   <HeartIconSolid className="h-6 w-6 text-red-500" />
                 ) : (
-                  <HeartIcon className="h-6 w-6 text-sand-beige-600" />
+                  <HeartIcon className="h-6 w-6 text-neutral-600" />
                 )}
               </button>
             </div>
 
-            <p className="text-sand-beige-600 mb-4 line-clamp-2 font-english">
+            <p className="text-neutral-600 mb-4 line-clamp-2 font-english">
               {isRTL ? product.descriptionAr : product.description}
             </p>
 
@@ -126,11 +126,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                   {[...Array(5)].map((_, i) => (
                     <StarIcon
                       key={i}
-                      className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-sand-beige-300'}`}
+                      className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-neutral-300'}`}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-sand-beige-600 font-english">
+                <span className="text-sm text-neutral-600 font-english">
                   {product.rating} ({product.reviewCount} {t('reviews')})
                 </span>
               </div>
@@ -139,13 +139,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
             {/* Specifications */}
             <div className={`space-y-3 ${isRTL ? 'space-x-reverse' : ''}`}>
               <div className="flex justify-between">
-                <span className="text-sand-beige-600 font-english">{t('material')}</span>
-                <span className="font-medium text-deep-navy-900 font-english">{isRTL ? product.materialAr : product.material}</span>
+                <span className="text-neutral-600 font-english">{t('material')}</span>
+                <span className="font-medium text-text-primary-600 font-english">{isRTL ? product.materialAr : product.material}</span>
               </div>
               {product.threadCount && (
                 <div className="flex justify-between">
-                  <span className="text-sand-beige-600 font-english">{t('threadCount')}</span>
-                  <span className="font-medium text-deep-navy-900 font-english">{product.threadCount}</span>
+                  <span className="text-neutral-600 font-english">{t('threadCount')}</span>
+                  <span className="font-medium text-text-primary-600 font-english">{product.threadCount}</span>
                 </div>
               )}
             </div>
@@ -154,11 +154,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           {/* Price and Actions */}
           <div className="flex items-center justify-between mt-6">
             <div className="flex items-center space-x-4">
-              <span className="text-3xl font-bold text-deep-navy-900 font-english">
+              <span className="text-3xl font-bold text-text-primary-600 font-english">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
-                <span className="text-xl text-sand-beige-500 line-through font-english">
+                <span className="text-xl text-neutral-500 line-through font-english">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
@@ -171,7 +171,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               <button
                 onClick={handleQuickAdd}
                 disabled={product.stock === 0}
-                className="bg-egyptian-blue-600 text-cream-white-50 py-3 px-6 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors disabled:bg-sand-beige-300 disabled:cursor-not-allowed flex items-center space-x-2 hover-lift font-english"
+                className="bg-text-primary-600 text-primary-50 py-3 px-6 rounded-lg hover:bg-accent-500 hover:text-text-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed flex items-center space-x-2 hover-lift font-english"
               >
                 <ShoppingBagIcon className="w-5 h-5" />
                 <span>{t('quickAdd')}</span>
