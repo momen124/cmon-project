@@ -5,10 +5,10 @@ import ClientLayout from '@/components/Layout/ClientLayout'
 
 export default function HomePage() {
   return (
-    <ClientLayout>
+    <>
       <Hero />
       <CategorySection />
       <FeaturedSections />
-    </ClientLayout>
+    </>
   )
 }

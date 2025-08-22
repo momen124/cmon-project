@@ -1,17 +1,17 @@
 "use client";
-
 import React, { useState, useMemo } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AdjustmentsHorizontalIcon, Squares2X2Icon, ListBulletIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { products, categories } from '@/data/mockData';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/Product/ProductCard';
 import ProductListItem from '@/components/Product/ProductListItem';
+import Link from 'next/link';
+import { useParams, useSearchParams } from 'next/navigation';
 
 const Shop: React.FC = () => {
   const { slug } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
   const { language } = useStore();
   
@@ -140,7 +140,7 @@ const Shop: React.FC = () => {
     <div className="container mx-auto px-4 py-8 bg-cream-white-50 animate-slide-up">
       <nav className="mb-8" aria-label="Breadcrumb">
         <div className={`flex items-center space-x-2 text-sm text-sand-beige-600 ${isRTL ? 'space-x-reverse' : ''} font-english`}>
-          <Link to="/" className="hover:text-egyptian-blue-600">{t('home')}</Link>
+          <Link href="/" className="hover:text-egyptian-blue-600">{t('home')}</Link>
           <span>/</span>
           {currentCategory ? (
             <span className="text-deep-navy-900 font-english">

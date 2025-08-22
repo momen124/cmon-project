@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { MinusIcon, PlusIcon, TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { useStore } from '@/store/useStore';
@@ -7,9 +10,11 @@ import { toast } from 'react-hot-toast';
 
 const Cart: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const params = useParams();
   const { cart, updateQuantity, removeFromCart, clearCart, language, currency } = useStore();
   const isRTL = language === 'ar';
+  const lang = params.lang as string;
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shipping = subtotal > 1000 ? 0 : 50;
@@ -47,7 +52,7 @@ const Cart: React.FC = () => {
         <h2 className="text-2xl font-bold text-deep-navy-900 mb-4 font-english">{t('emptyCart')}</h2>
         <p className="text-sand-beige-600 mb-8 font-english">{t('cartEmptyMessage')}</p>
         <Link
-          to="/shop"
+          href={`/${lang}/shop`}
           className="bg-egyptian-blue-600 text-cream-white-50 px-8 py-3 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors hover-lift inline-block font-english"
         >
           {t('continueShopping')}
@@ -95,7 +100,7 @@ const Cart: React.FC = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <Link to={`/product/${item.product.id}`}>
+                      <Link href={`/${lang}/product/${item.product.id}`}>
                         <h3 className="text-lg font-semibold text-deep-navy-900 hover:text-egyptian-blue-600 transition-colors font-english">
                           {isRTL ? item.product.nameAr : item.product.name}
                         </h3>
@@ -161,7 +166,7 @@ const Cart: React.FC = () => {
 
           <div className="mt-6">
             <Link
-              to="/shop"
+              href={`/${lang}/shop`}
               className="text-egyptian-blue-600 hover:text-gold-accent-500 transition-colors inline-flex items-center font-english"
             >
               {isRTL ? t('continueShopping') + ' ←' : '← ' + t('continueShopping')}
@@ -193,7 +198,7 @@ const Cart: React.FC = () => {
               </div>
             </div>
             <Link
-              to="/checkout"
+              href={`/${lang}/checkout`}
               className="w-full bg-egyptian-blue-600 text-cream-white-50 py-3 px-6 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors hover-lift block text-center font-english"
             >
               {t('proceedToCheckout')}

@@ -91,7 +91,7 @@ export const products: Product[] = [
     categoryAr: 'أطقم ملاءات السرير',
     subcategory: 'Plain Sheets',
     sizes: [
-      { name: 'Single', cm: '90x200' },
+      { name: 'Single', cm: '200x200' },
       { name: 'Double', cm: '140x200' },
       { name: 'Queen', cm: '160x200' },
       { name: 'King', cm: '180x200' },
