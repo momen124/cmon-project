@@ -1,16 +1,35 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
-export function ThemeToggle() {
+export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component only renders after mounting to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Render nothing or a placeholder during SSR to match client
+    return (
+      <button
+        className="p-2 bg-sand-beige-100 text-deep-navy-900 rounded-full hover:bg-gold-accent-500"
+        aria-label="Switch to dark theme"
+      >
+        <MoonIcon className="w-5 h-5" />
+      </button>
+    );
+  }
 
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="p-2 bg-sand-beige-100 text-deep-navy-900 rounded-full hover:bg-gold-accent-500 hover:text-cream-white-50 transition-colors hover-lift focus-visible:ring-2 focus-visible:ring-gold-accent-500"
-      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+      className="p-2 bg-sand-beige-100 text-deep-navy-900 rounded-full hover:bg-gold-accent-500"
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
     >
       {theme === 'dark' ? (
         <SunIcon className="w-5 h-5" />

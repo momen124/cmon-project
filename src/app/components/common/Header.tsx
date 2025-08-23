@@ -16,7 +16,7 @@ import { useStore } from '@/store/useStore';
 import { categories } from '@/data/mockData';
 import MegaMenu from '@/components/common/MegaMenu';
 import Image from 'next/image';
-import { ThemeToggle } from './ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 
 type CurrencyCode = 'EGP' | 'USD' | 'EUR';
 

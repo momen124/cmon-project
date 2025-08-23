@@ -1,18 +1,28 @@
 'use client';
 
-import React, { ReactNode } from 'react';
-import Header from '../common/Header';
-import Footer from '../common/Footer';
+import { useTranslation } from 'react-i18next';
+import '@/i18n'; // Use absolute path based on tsconfig.json alias
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import { useEffect } from 'react';
 
+export default function ClientLayout({
+  children,
+  lang,
+}: {
+  children: React.ReactNode;
+  lang: string;
+}) {
+  const { i18n } = useTranslation();
 
+  useEffect(() => {
+    i18n.changeLanguage(lang); // Sync i18n language with route param
+  }, [lang, i18n]);
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex-1 text-[var(--text-color)]">
-        {children}
-      </main>
+      <main>{children}</main>
       <Footer />
     </>
   );
