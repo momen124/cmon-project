@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { HeartIcon, StarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Product } from '@/types';
 import { useStore } from '@/store/useStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import Link from 'next/link';
 
 interface ProductListItemProps {
   product: Product;
@@ -66,7 +66,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
       <div className="flex p-4">
         {/* Product Image */}
         <div className="flex-shrink-0 w-48 h-48 relative overflow-hidden rounded-lg bg-gradient-to-br from-sand-beige-100 to-sand-beige-200">
-          <Link to={`/product/${product.id}`}>
+          <Link href={`/product/${product.id}`}>
             <img
               src={product.images[0] || "/placeholder.svg"}
               alt={isRTL ? product.nameAr : product.name}
@@ -97,7 +97,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                 <div className="text-sm text-sand-beige-600 mb-2 font-english">
                   {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
                 </div>
-                <Link to={`/product/${product.id}`}>
+                <Link href={`/product/${product.id}`}>
                   <h3 className="text-xl font-bold text-deep-navy-900 mb-4 group-hover:text-egyptian-blue-600 transition-colors font-english">
                     {isRTL ? product.nameAr : product.name}
                   </h3>

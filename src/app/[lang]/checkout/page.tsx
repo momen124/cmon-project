@@ -1,7 +1,5 @@
-'use client';
-
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CreditCardIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { useStore } from '@/store/useStore';
@@ -9,7 +7,7 @@ import { toast } from 'react-hot-toast';
 
 const Checkout: React.FC = () => {
   const { t } = useTranslation();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { cart, clearCart, language, currency } = useStore();
 
   const [step, setStep] = useState(1);
@@ -70,7 +68,7 @@ const Checkout: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       clearCart();
       toast.success(t('orderPlaced'));
-      router.push('/account/orders');
+      navigate('/account/orders');
     } catch (error) {
       toast.error(t('orderFailed'));
     }
@@ -82,7 +80,7 @@ const Checkout: React.FC = () => {
         <h2 className="text-2xl font-bold text-deep-navy-900 mb-4 font-english">{t('emptyCart')}</h2>
         <p className="text-sand-beige-600 mb-8 font-english">{t('addProductsToCheckout')}</p>
         <button
-          onClick={() => router.push('/shop')}
+          onClick={() => navigate('/shop')}
           className="bg-egyptian-blue-600 text-cream-white-50 px-6 py-3 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors hover-lift font-english"
         >
           {t('continueShopping')}

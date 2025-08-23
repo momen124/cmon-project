@@ -1,12 +1,11 @@
-"use client";
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { StarIcon, HeartIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { products } from '@/data/mockData';
 import { useStore } from '@/store/useStore';
-import { useParams } from 'next/navigation';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

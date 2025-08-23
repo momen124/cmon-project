@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdjustmentsHorizontalIcon, Squares2X2Icon, ListBulletIcon, FunnelIcon } from '@heroicons/react/24/outline';
@@ -6,8 +7,8 @@ import { products, categories } from '@/data/mockData';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/Product/ProductCard';
 import ProductListItem from '@/components/Product/ProductListItem';
-import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 const Shop: React.FC = () => {
   const { slug } = useParams();
