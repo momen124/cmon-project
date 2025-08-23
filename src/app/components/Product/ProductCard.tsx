@@ -34,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <Link href={`/${language}/product/${product.id}`}>
       <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
         {/* Product Image */}
-        <div className="relative aspect-square bg-gradient-to-br from-neutral-100 to-neutral-200 flex items-center justify-center overflow-hidden">
+        <div className="relative aspect-square bg-gradient-to-br from-sand-beige-100 to-sand-beige-200 flex items-center justify-center overflow-hidden">
           <div className="text-6xl opacity-60">🛏️</div>
           
           {/* Badges */}
@@ -43,10 +43,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="bg-nile-teal-500 text-white text-xs px-2 py-1 rounded">New</span>
             )}
             {product.bestseller && (
-              <span className="bg-accent-500 text-text-primary-600 text-xs px-2 py-1 rounded">Bestseller</span>
+              <span className="bg-gold-accent-500 text-deep-navy-900 text-xs px-2 py-1 rounded">Bestseller</span>
             )}
             {product.featured && (
-              <span className="bg-text-primary-500 text-white text-xs px-2 py-1 rounded">Featured</span>
+              <span className="bg-egyptian-blue-500 text-white text-xs px-2 py-1 rounded">Featured</span>
             )}
           </div>
 
@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-text-primary-600 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors"
+              className="bg-white text-deep-navy-900 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors"
             >
               <ShoppingBagIcon className="w-4 h-4" />
               Quick Add
@@ -79,7 +79,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Product Info */}
         <div className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-text-primary-600 transition-colors">
+          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-egyptian-blue-600 transition-colors">
             {product.name}
           </h3>
           <p className="text-sm text-gray-600 mb-2 line-clamp-2">

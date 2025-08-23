@@ -50,7 +50,7 @@ const FeaturedSections: React.FC = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="inline-block w-12 h-1 bg-accent-500 mb-4 rounded-full"></span>
+            <span className="inline-block w-12 h-1 bg-gold-accent-500 mb-4 rounded-full"></span>
             <h2 className="text-4xl lg:text-5xl font-bold text-deep-navy-800 mb-4">
               {title}
             </h2>
@@ -77,7 +77,7 @@ const FeaturedSections: React.FC = () => {
         <div className="text-center">
           <Link
             href={`/${language}${viewAllLink}`}
-            className={`group inline-flex items-center gap-2 bg-text-primary-600 hover:bg-text-primary-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`group inline-flex items-center gap-2 bg-egyptian-blue-600 hover:bg-egyptian-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <span>{t('viewAll')}</span>
             <ChevronRightIcon className={`w-5 h-5 group-hover:translate-x-1 transition-transform duration-300 ${isRTL ? 'rotate-180 group-hover:-translate-x-1' : ''}`} />
@@ -91,8 +91,8 @@ const FeaturedSections: React.FC = () => {
     <div className="relative">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-64 h-64 bg-accent-100 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute top-3/4 -right-32 w-64 h-64 bg-text-primary-100 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute top-1/4 -left-32 w-64 h-64 bg-gold-accent-100 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute top-3/4 -right-32 w-64 h-64 bg-egyptian-blue-100 rounded-full opacity-20 blur-3xl" />
       </div>
 
       <div className="relative z-10">
@@ -101,7 +101,7 @@ const FeaturedSections: React.FC = () => {
           subtitle={t('discoverLatest')}
           products={newArrivals} 
           viewAllLink="/shop?filter=new"
-          bgColor="bg-primary-50"
+          bgColor="bg-cream-white-50"
           index={0}
         />
         
@@ -119,7 +119,7 @@ const FeaturedSections: React.FC = () => {
           subtitle={t('handpicked')}
           products={featured} 
           viewAllLink="/shop?filter=featured"
-          bgColor="bg-neutral-50"
+          bgColor="bg-sand-beige-50"
           index={2}
         />
       </div>

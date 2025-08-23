@@ -18,7 +18,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ category }) => {
   if (!category.children) return null;
 
   return (
-    <div className="absolute top-full left-0 w-screen max-w-xs bg-primary-200 shadow-lg border border-[var(--border-color)] rounded-lg mt-1 z-40">
+    <div className="absolute top-full left-0 w-screen max-w-xs bg-[var(--card-bg-color)] shadow-lg border border-[var(--border-color)] rounded-lg mt-1 z-40">
       <div className="p-4">
         <h3 className="font-semibold text-[var(--primary-color)] mb-3">
           {isRTL ? category.nameAr : category.name}

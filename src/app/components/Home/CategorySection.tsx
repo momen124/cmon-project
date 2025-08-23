@@ -12,27 +12,27 @@ const CategorySection: React.FC = () => {
   const categoryConfig = {
     bedding: {
       emoji: '🛏️',
-      gradient: 'from-text-primary-100 to-text-primary-200',
-      hoverGradient: 'group-hover:from-text-primary-200 group-hover:to-text-primary-300',
-      iconColor: 'text-text-primary-600'
+      gradient: 'from-egyptian-blue-100 to-egyptian-blue-200',
+      hoverGradient: 'group-hover:from-egyptian-blue-200 group-hover:to-egyptian-blue-300',
+      iconColor: 'text-egyptian-blue-600'
     },
     pillows: {
       emoji: '🪶',
-      gradient: 'from-accent-100 to-accent-200',
-      hoverGradient: 'group-hover:from-accent-200 group-hover:to-accent-300',
-      iconColor: 'text-accent-600'
+      gradient: 'from-gold-accent-100 to-gold-accent-200',
+      hoverGradient: 'group-hover:from-gold-accent-200 group-hover:to-gold-accent-300',
+      iconColor: 'text-gold-accent-600'
     },
     blankets: {
       emoji: '🧸',
-      gradient: 'from-nile-teal-100 to-accent-300',
-      hoverGradient: 'group-hover:from-accent-300 group-hover:to-nile-teal-300',
+      gradient: 'from-nile-teal-100 to-nile-teal-200',
+      hoverGradient: 'group-hover:from-nile-teal-200 group-hover:to-nile-teal-300',
       iconColor: 'text-nile-teal-600'
     },
     bath: {
       emoji: '🛁',
-      gradient: 'from-neutral-200 to-neutral-300',
-      hoverGradient: 'group-hover:from-neutral-300 group-hover:to-neutral-400',
-      iconColor: 'text-neutral-700'
+      gradient: 'from-sand-beige-200 to-sand-beige-300',
+      hoverGradient: 'group-hover:from-sand-beige-300 group-hover:to-sand-beige-400',
+      iconColor: 'text-sand-beige-700'
     }
   };
 
@@ -46,7 +46,7 @@ const CategorySection: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary-50 to-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-cream-white-50 to-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div 
@@ -62,7 +62,7 @@ const CategorySection: React.FC = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="inline-block w-16 h-1 bg-accent-500 mb-6 rounded-full"></span>
+            <span className="inline-block w-16 h-1 bg-gold-accent-500 mb-6 rounded-full"></span>
             <h2 className="text-4xl lg:text-5xl font-bold text-deep-navy-800 mb-6">
               {t('shopByCategory')}
             </h2>
@@ -104,7 +104,7 @@ const CategorySection: React.FC = () => {
                   
                   {/* Category Info */}
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-deep-navy-800 group-hover:text-text-primary-600 transition-colors duration-300">
+                    <h3 className="text-2xl font-bold text-deep-navy-800 group-hover:text-egyptian-blue-600 transition-colors duration-300">
                       {category.name}
                     </h3>
                     <p className="text-soft-gray-600 leading-relaxed">
@@ -113,7 +113,7 @@ const CategorySection: React.FC = () => {
                     
                     {/* Call to Action */}
                     <div className="pt-4">
-                      <div className="inline-flex items-center gap-2 text-text-primary-600 font-semibold group-hover:text-accent-600 transition-colors duration-300">
+                      <div className="inline-flex items-center gap-2 text-egyptian-blue-600 font-semibold group-hover:text-gold-accent-600 transition-colors duration-300">
                         <span>{t('shopNow')}</span>
                         <svg 
                           className="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300" 
@@ -138,9 +138,9 @@ const CategorySection: React.FC = () => {
         {/* Bottom Decoration */}
         <div className="mt-20 text-center">
           <div className="inline-flex items-center gap-4 text-soft-gray-400">
-            <div className="w-16 h-px bg-gradient-to-r from-transparent to-accent-300"></div>
-            <div className="w-2 h-2 bg-accent-400 rounded-full"></div>
-            <div className="w-16 h-px bg-gradient-to-l from-transparent to-accent-300"></div>
+            <div className="w-16 h-px bg-gradient-to-r from-transparent to-gold-accent-300"></div>
+            <div className="w-2 h-2 bg-gold-accent-400 rounded-full"></div>
+            <div className="w-16 h-px bg-gradient-to-l from-transparent to-gold-accent-300"></div>
           </div>
         </div>
       </div>
