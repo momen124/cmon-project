@@ -46,7 +46,7 @@ const CartSidebar: React.FC = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-deep-navy-900/75 transition-opacity" />
+          <div className="fixed inset-0 bg-contrast-900/75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
@@ -62,16 +62,16 @@ const CartSidebar: React.FC = () => {
                 leaveTo={isRTL ? '-translate-x-full' : 'translate-x-full'}
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-cream-white-50 shadow-xl rounded-lg">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-secondary-50 shadow-xl rounded-lg">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
-                        <Dialog.Title className="text-lg font-semibold text-deep-navy-900 font-english">
+                        <Dialog.Title className="text-lg font-semibold text-contrast-900 font-english">
                           {t('shoppingCart')}
                         </Dialog.Title>
                         <div className={`ml-3 flex h-7 items-center ${isRTL ? 'mr-3 ml-0' : ''}`}>
                           <button
                             type="button"
-                            className="p-2 text-sand-beige-600 hover:text-egyptian-blue-600 hover-lift focus:ring-2 focus:ring-gold-accent-500 rounded"
+                            className="p-2 text-base-600 hover:text-primary-600 hover-lift focus:ring-2 focus:ring-highlight-500 rounded"
                             onClick={() => setCartOpen(false)}
                             aria-label={t('closeCart')}
                           >
@@ -83,21 +83,21 @@ const CartSidebar: React.FC = () => {
                       <div className="mt-8">
                         {cart.length === 0 ? (
                           <div className="text-center py-12">
-                            <p className="text-sand-beige-600 mb-4 font-english">{t('cartEmpty')}</p>
+                            <p className="text-base-600 mb-4 font-english">{t('cartEmpty')}</p>
                             <Link
                               to="/shop"
                               onClick={() => setCartOpen(false)}
-                              className="inline-block bg-egyptian-blue-600 text-cream-white-50 px-6 py-2 rounded-lg hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors hover-lift font-english"
+                              className="inline-block bg-primary-600 text-secondary-50 px-6 py-2 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift font-english"
                             >
                               {t('continueShopping')}
                             </Link>
                           </div>
                         ) : (
                           <div className="flow-root">
-                            <ul role="list" className="-my-6 divide-y divide-sand-beige-200">
+                            <ul role="list" className="-my-6 divide-y divide-base-200">
                               {cart.map((item) => (
                                 <li key={item.id} className="flex py-6">
-                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-sand-beige-200">
+                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-base-200">
                                     <img
                                       src={item.color.image}
                                       alt={isRTL ? item.product.nameAr : item.product.name}
@@ -107,12 +107,12 @@ const CartSidebar: React.FC = () => {
 
                                   <div className={`ml-4 flex flex-1 flex-col ${isRTL ? 'mr-4 ml-0' : ''}`}>
                                     <div>
-                                      <div className="flex justify-between text-base font-medium text-deep-navy-900 font-english">
+                                      <div className="flex justify-between text-base font-medium text-contrast-900 font-english">
                                         <h3>
                                           <Link
                                             to={`/product/${item.product.id}`}
                                             onClick={() => setCartOpen(false)}
-                                            className="hover:text-egyptian-blue-600 transition-colors"
+                                            className="hover:text-primary-600 transition-colors"
                                           >
                                             {isRTL ? item.product.nameAr : item.product.name}
                                           </Link>
@@ -121,7 +121,7 @@ const CartSidebar: React.FC = () => {
                                           {formatPrice(item.product.price * item.quantity)}
                                         </p>
                                       </div>
-                                      <p className="mt-1 text-sm text-sand-beige-600 font-english">
+                                      <p className="mt-1 text-sm text-base-600 font-english">
                                         {isRTL ? item.color.nameAr : item.color.name} • {item.size}
                                       </p>
                                     </div>
@@ -129,22 +129,22 @@ const CartSidebar: React.FC = () => {
                                       <div className={`flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
                                         <button
                                           onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                                          className="p-1 border border-sand-beige-200 rounded hover:bg-sand-beige-100 hover-lift transition-colors"
+                                          className="p-1 border border-base-200 rounded hover:bg-base-100 hover-lift transition-colors"
                                           disabled={item.quantity <= 1}
                                           aria-label={t('decreaseQuantity')}
                                         >
-                                          <MinusIcon className="w-4 h-4 text-deep-navy-900" />
+                                          <MinusIcon className="w-4 h-4 text-contrast-900" />
                                         </button>
-                                        <span className="mx-2 min-w-[2rem] text-center text-deep-navy-900 font-english">
+                                        <span className="mx-2 min-w-[2rem] text-center text-contrast-900 font-english">
                                           {item.quantity}
                                         </span>
                                         <button
                                           onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                                          className="p-1 border border-sand-beige-200 rounded hover:bg-sand-beige-100 hover-lift transition-colors"
+                                          className="p-1 border border-base-200 rounded hover:bg-base-100 hover-lift transition-colors"
                                           disabled={item.quantity >= item.product.stock}
                                           aria-label={t('increaseQuantity')}
                                         >
-                                          <PlusIcon className="w-4 h-4 text-deep-navy-900" />
+                                          <PlusIcon className="w-4 h-4 text-contrast-900" />
                                         </button>
                                       </div>
 
@@ -167,21 +167,21 @@ const CartSidebar: React.FC = () => {
                     </div>
 
                     {cart.length > 0 && (
-                      <div className="border-t border-sand-beige-200 px-4 py-6 sm:px-6">
+                      <div className="border-t border-base-200 px-4 py-6 sm:px-6">
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between text-deep-navy-900 font-english">
+                          <div className="flex justify-between text-contrast-900 font-english">
                             <span>{t('subtotal')}</span>
                             <span>{formatPrice(subtotal)}</span>
                           </div>
-                          <div className="flex justify-between text-deep-navy-900 font-english">
+                          <div className="flex justify-between text-contrast-900 font-english">
                             <span>{t('shipping')}</span>
                             <span>{shipping === 0 ? t('free') : formatPrice(shipping)}</span>
                           </div>
-                          <div className="flex justify-between text-deep-navy-900 font-english">
+                          <div className="flex justify-between text-contrast-900 font-english">
                             <span>{t('tax')}</span>
                             <span>{formatPrice(tax)}</span>
                           </div>
-                          <div className="flex justify-between text-base font-semibold text-deep-navy-900 border-t border-sand-beige-200 pt-2 font-english">
+                          <div className="flex justify-between text-base font-semibold text-contrast-900 border-t border-base-200 pt-2 font-english">
                             <span>{t('total')}</span>
                             <span>{formatPrice(total)}</span>
                           </div>
@@ -190,17 +190,17 @@ const CartSidebar: React.FC = () => {
                           <Link
                             to="/checkout"
                             onClick={() => setCartOpen(false)}
-                            className="flex items-center justify-center rounded-lg bg-egyptian-blue-600 text-cream-white-50 px-6 py-3 text-base font-medium shadow-sm hover:bg-gold-accent-500 hover:text-deep-navy-900 transition-colors hover-lift w-full font-english"
+                            className="flex items-center justify-center rounded-lg bg-primary-600 text-secondary-50 px-6 py-3 text-base font-medium shadow-sm hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift w-full font-english"
                           >
                             {t('checkout')}
                           </Link>
                         </div>
-                        <div className="mt-6 flex justify-center text-center text-sm text-sand-beige-600 font-english">
+                        <div className="mt-6 flex justify-center text-center text-sm text-base-600 font-english">
                           <p>
                             {t('or')}{' '}
                             <button
                               type="button"
-                              className="font-medium text-egyptian-blue-600 hover:text-gold-accent-500 transition-colors font-english"
+                              className="font-medium text-primary-600 hover:text-highlight-500 transition-colors font-english"
                               onClick={() => setCartOpen(false)}
                             >
                               {t('continueShopping')}

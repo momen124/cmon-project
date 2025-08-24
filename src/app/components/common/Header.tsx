@@ -65,15 +65,15 @@ const Header: React.FC = () => {
     <>
       <header className="bg-[var(--card-bg-color)] shadow-[0_2px_5px_var(--shadow-color)] relative z-50 animate-slide-up">
         {/* Top Bar */}
-        <div className="bg-egyptian-blue-900 text-cream-white-50 py-3">
+        <div className="bg-primary-900 text-secondary-50 py-3">
           <div className="container mx-auto px-4 flex justify-between items-center text-sm">
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
-              <span className="font-medium text-nile-teal-200">{t('promotionalBanner')}</span>
+              <span className="font-medium text-neutral-200">{t('promotionalBanner')}</span>
             </div>
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
               <button
                 onClick={toggleLanguage}
-                className="hover-lift text-cream-white-50 hover:text-gold-accent-400 transition-colors font-medium"
+                className="hover-lift text-secondary-50 hover:text-highlight-400 transition-colors font-medium"
                 aria-label={t('toggleLanguage', { lang: language === 'en' ? 'Arabic' : 'English' })}
               >
                 {language === 'en' ? 'العربية' : 'English'}
@@ -82,10 +82,10 @@ const Header: React.FC = () => {
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-                className="bg-transparent border-none text-cream-white-50 hover:text-gold-accent-400 focus:outline-none focus:ring-2 focus:ring-gold-accent-500 cursor-pointer font-medium rounded-md"
+                className="bg-transparent border-none text-secondary-50 hover:text-highlight-400 focus:outline-none focus:ring-2 focus:ring-highlight-500 cursor-pointer font-medium rounded-md"
               >
                 {currencies.map((curr) => (
-                  <option key={curr.code} value={curr.code} className="text-deep-navy-900 bg-cream-white-50">
+                  <option key={curr.code} value={curr.code} className="text-contrast-900 bg-secondary-50">
                     {curr.code} ({curr.symbol})
                   </option>
                 ))}
@@ -99,7 +99,7 @@ const Header: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${language}`} className="flex items-center space-x-2 hover-lift" title={t('home')}>
-              <span className="text-3xl font-bold text-egyptian-blue-600 font-english">Cmon Elsonon</span>
+              <span className="text-3xl font-bold text-primary-600 font-english">Cmon Elsonon</span>
             </Link>
 
             {/* Search Bar - Desktop */}
@@ -114,28 +114,28 @@ const Header: React.FC = () => {
                   placeholder={t('search')}
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className={`w-full px-4 py-2 bg-transparent border border-sand-beige-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-accent-500 text-deep-navy-900 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
+                  className={`w-full px-4 py-2 bg-transparent border border-base-200 rounded-md focus:outline-none focus:ring-2 focus:ring-highlight-500 text-contrast-900 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
                 />
-                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-sand-beige-500 ${isRTL ? 'right-3' : 'left-3'}`} />
+                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-base-500 ${isRTL ? 'right-3' : 'left-3'}`} />
               </div>
             </div>
 
             {/* Actions */}
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
-              <Link href={`/${language}/account`} className="p-2 hover-lift hover:text-gold-accent-500 transition-colors" aria-label={t('account')}>
-                <UserIcon className="w-6 h-6 text-sand-beige-600" />
+              <Link href={`/${language}/account`} className="p-2 hover-lift hover:text-highlight-500 transition-colors" aria-label={t('account')}>
+                <UserIcon className="w-6 h-6 text-base-600" />
               </Link>
-              <Link href={`/${language}/wishlist`} className="p-2 hover-lift hover:text-gold-accent-500 transition-colors" aria-label={t('wishlist')}>
-                <HeartIcon className="w-6 h-6 text-sand-beige-600" />
+              <Link href={`/${language}/wishlist`} className="p-2 hover-lift hover:text-highlight-500 transition-colors" aria-label={t('wishlist')}>
+                <HeartIcon className="w-6 h-6 text-base-600" />
               </Link>
               <button
                 onClick={() => setCartOpen(true)}
-                className="p-2 hover-lift hover:text-gold-accent-500 transition-colors relative"
+                className="p-2 hover-lift hover:text-highlight-500 transition-colors relative"
                 aria-label={t('openCart', { count: cartItemsCount })}
               >
-                <ShoppingBagIcon className="w-6 h-6 text-sand-beige-600" />
+                <ShoppingBagIcon className="w-6 h-6 text-base-600" />
                 {cartItemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-gold-accent-500 text-cream-white-50 text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse-glow">
+                  <span className="absolute -top-1 -right-1 bg-highlight-500 text-secondary-50 text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse-glow">
                     {cartItemsCount}
                   </span>
                 )}
@@ -145,14 +145,14 @@ const Header: React.FC = () => {
                 className="md:hidden p-2 hover-lift"
                 aria-label={mobileMenuOpen ? t('closeMenu') : t('openMenu')}
               >
-                {mobileMenuOpen ? <XMarkIcon className="w-6 h-6 text-sand-beige-600" /> : <Bars3Icon className="w-6 h-6 text-sand-beige-600" />}
+                {mobileMenuOpen ? <XMarkIcon className="w-6 h-6 text-base-600" /> : <Bars3Icon className="w-6 h-6 text-base-600" />}
               </button>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="border-t border-sand-beige-200 hidden md:block" aria-label={t('mainNavigation')}>
+        <nav className="border-t border-base-200 hidden md:block" aria-label={t('mainNavigation')}>
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-center space-x-8">
               {categories.map((category) => (
@@ -164,7 +164,7 @@ const Header: React.FC = () => {
                 >
                   <Link
                     href={`/${language}/shop?category=${category.slug}`}
-                    className={`flex items-center py-4 px-2 text-deep-navy-900 hover:text-gold-accent-500 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
+                    className={`flex items-center py-4 px-2 text-contrast-900 hover:text-highlight-500 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
                   >
                     <span>{isRTL ? category.nameAr : category.name}</span>
                     {category.children && <ChevronDownIcon className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />}
@@ -178,7 +178,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-cream-white-50 border-t border-sand-beige-200 animate-slide-up">
+          <div className="md:hidden bg-secondary-50 border-t border-base-200 animate-slide-up">
             {/* Mobile Search */}
             <div className="p-4">
               <div className="relative glass rounded-md">
@@ -191,9 +191,9 @@ const Header: React.FC = () => {
                   placeholder={t('search')}
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className={`w-full px-4 py-2 bg-transparent border border-sand-beige-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-accent-500 text-deep-navy-900 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
+                  className={`w-full px-4 py-2 bg-transparent border border-base-200 rounded-md focus:outline-none focus:ring-2 focus:ring-highlight-500 text-contrast-900 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
                 />
-                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-sand-beige-500 ${isRTL ? 'right-3' : 'left-3'}`} />
+                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-base-500 ${isRTL ? 'right-3' : 'left-3'}`} />
               </div>
             </div>
 
@@ -203,7 +203,7 @@ const Header: React.FC = () => {
                 <div key={category.id}>
                   <button
                     onClick={() => toggleCategory(category.id)}
-                    className="w-full flex justify-between px-4 py-3 text-deep-navy-900 hover:bg-sand-beige-100 hover:text-gold-accent-500 transition-colors font-medium hover-lift"
+                    className="w-full flex justify-between px-4 py-3 text-contrast-900 hover:bg-base-100 hover:text-highlight-500 transition-colors font-medium hover-lift"
                   >
                     <span className={`font-${isRTL ? 'arabic' : 'english'}`}>{isRTL ? category.nameAr : category.name}</span>
                     {category.children && (
@@ -218,7 +218,7 @@ const Header: React.FC = () => {
                         <Link
                           key={subCategory.id}
                           href={`/${language}/shop?category=${subCategory.slug}`}
-                          className="block px-4 py-2 text-sand-beige-600 hover:bg-sand-beige-100 hover:text-gold-accent-500 transition-colors font-medium font-english"
+                          className="block px-4 py-2 text-base-600 hover:bg-base-100 hover:text-highlight-500 transition-colors font-medium font-english"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {isRTL ? subCategory.nameAr : subCategory.name}

@@ -12,27 +12,27 @@ const CategorySection: React.FC = () => {
   const categoryConfig = {
     bedding: {
       emoji: '🛏️',
-      gradient: 'from-egyptian-blue-100 to-egyptian-blue-200',
-      hoverGradient: 'group-hover:from-egyptian-blue-200 group-hover:to-egyptian-blue-300',
-      iconColor: 'text-egyptian-blue-600'
+      gradient: 'from-primary-100 to-primary-200',
+      hoverGradient: 'group-hover:from-primary-200 group-hover:to-primary-300',
+      iconColor: 'text-primary-600'
     },
     pillows: {
       emoji: '🪶',
-      gradient: 'from-gold-accent-100 to-gold-accent-200',
-      hoverGradient: 'group-hover:from-gold-accent-200 group-hover:to-gold-accent-300',
-      iconColor: 'text-gold-accent-600'
+      gradient: 'from-highlight-100 to-highlight-200',
+      hoverGradient: 'group-hover:from-highlight-200 group-hover:to-highlight-300',
+      iconColor: 'text-highlight-600'
     },
     blankets: {
       emoji: '🧸',
-      gradient: 'from-nile-teal-100 to-nile-teal-200',
-      hoverGradient: 'group-hover:from-nile-teal-200 group-hover:to-nile-teal-300',
-      iconColor: 'text-nile-teal-600'
+      gradient: 'from-neutral-100 to-neutral-200',
+      hoverGradient: 'group-hover:from-neutral-200 group-hover:to-neutral-300',
+      iconColor: 'text-neutral-600'
     },
     bath: {
       emoji: '🛁',
-      gradient: 'from-sand-beige-200 to-sand-beige-300',
-      hoverGradient: 'group-hover:from-sand-beige-300 group-hover:to-sand-beige-400',
-      iconColor: 'text-sand-beige-700'
+      gradient: 'from-base-200 to-base-300',
+      hoverGradient: 'group-hover:from-base-300 group-hover:to-base-400',
+      iconColor: 'text-base-700'
     }
   };
 
@@ -46,7 +46,7 @@ const CategorySection: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-cream-white-50 to-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-secondary-50 to-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div 
@@ -62,11 +62,11 @@ const CategorySection: React.FC = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="inline-block w-16 h-1 bg-gold-accent-500 mb-6 rounded-full"></span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-deep-navy-800 mb-6">
+            <span className="inline-block w-16 h-1 bg-highlight-500 mb-6 rounded-full"></span>
+            <h2 className="text-4xl lg:text-5xl font-bold text-contrast-800 mb-6">
               {t('shopByCategory')}
             </h2>
-            <p className="text-xl text-soft-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-600 max-w-3xl mx-auto leading-relaxed">
               {t('discoverPremium')}
             </p>
           </div>
@@ -104,16 +104,16 @@ const CategorySection: React.FC = () => {
                   
                   {/* Category Info */}
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-deep-navy-800 group-hover:text-egyptian-blue-600 transition-colors duration-300">
+                    <h3 className="text-2xl font-bold text-contrast-800 group-hover:text-primary-600 transition-colors duration-300">
                       {category.name}
                     </h3>
-                    <p className="text-soft-gray-600 leading-relaxed">
+                    <p className="text-muted-600 leading-relaxed">
                       {category.description}
                     </p>
                     
                     {/* Call to Action */}
                     <div className="pt-4">
-                      <div className="inline-flex items-center gap-2 text-egyptian-blue-600 font-semibold group-hover:text-gold-accent-600 transition-colors duration-300">
+                      <div className="inline-flex items-center gap-2 text-primary-600 font-semibold group-hover:text-highlight-600 transition-colors duration-300">
                         <span>{t('shopNow')}</span>
                         <svg 
                           className="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300" 
@@ -137,10 +137,10 @@ const CategorySection: React.FC = () => {
         
         {/* Bottom Decoration */}
         <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-4 text-soft-gray-400">
-            <div className="w-16 h-px bg-gradient-to-r from-transparent to-gold-accent-300"></div>
-            <div className="w-2 h-2 bg-gold-accent-400 rounded-full"></div>
-            <div className="w-16 h-px bg-gradient-to-l from-transparent to-gold-accent-300"></div>
+          <div className="inline-flex items-center gap-4 text-muted-400">
+            <div className="w-16 h-px bg-gradient-to-r from-transparent to-highlight-300"></div>
+            <div className="w-2 h-2 bg-highlight-400 rounded-full"></div>
+            <div className="w-16 h-px bg-gradient-to-l from-transparent to-highlight-300"></div>
           </div>
         </div>
       </div>
