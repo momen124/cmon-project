@@ -1,12 +1,14 @@
+'use client';
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CartItem, Product, User } from '../types';
+import { CartItem, Product, ProductColor, User } from '../types';
 
 interface StoreState {
   // Cart
   cart: CartItem[];
   cartOpen: boolean;
-  addToCart: (product: Product, size: string, color: any, quantity?: number) => void;
+  addToCart: (product: Product, size: string, color: ProductColor, quantity?: number) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;

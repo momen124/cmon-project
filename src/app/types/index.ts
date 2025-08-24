@@ -1,5 +1,3 @@
-
-
 export interface Product {
   id: string;
   name: string;
@@ -28,11 +26,10 @@ export interface Product {
   comparePrice?: number;
 }
 
-interface Size {
+export interface Size {
   name: string;
   cm: string;
 }
-
 
 export interface ProductColor {
   name: string;
@@ -59,6 +56,9 @@ export interface User {
   orders: Order[];
   wishlist: string[];
   loyaltyPoints: number;
+  totalOrders: number; // Added
+  totalSpent: number; // Added
+  memberSince: string; // Added
 }
 
 export interface Address {
