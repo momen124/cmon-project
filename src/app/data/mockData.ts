@@ -27,9 +27,7 @@ export const categories: Category[] = [
     slug: 'bed-sheets',
     children: [
       { id: 'plain-sheets', name: 'Plain Sheets', nameAr: 'ملاءات سادة', slug: 'plain-sheets' },
-      { id: 'printed-sheets', name: 'Printed Sheets', nameAr: 'ملاءات مطبوعة', slug: 'printed-sheets' },
-      { id: 'flat-bedsheet', name: 'Flat Bedsheet', nameAr: 'ملاءة مسطحة', slug: 'flat-bedsheet' },
-      { id: 'fitted-bedsheet', name: 'Fitted Bedsheet', nameAr: 'ملاءة مطاطية', slug: 'fitted-bedsheet' }
+      { id: 'printed-sheets', name: 'Printed Sheets', nameAr: 'ملاءات مطبوعة', slug: 'printed-sheets' }
     ]
   },
   {
@@ -37,9 +35,7 @@ export const categories: Category[] = [
     name: 'Duvets',
     nameAr: 'لحاف',
     slug: 'duvets',
-    children: [
-      { id: '100-cotton', name: '100% Cotton', nameAr: 'قطن ١٠٠٪', slug: '100-cotton' }
-    ]
+    
   },
   {
     id: 'coverlets',
