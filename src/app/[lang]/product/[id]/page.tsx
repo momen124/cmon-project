@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { StarIcon, HeartIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
