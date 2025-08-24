@@ -5,10 +5,10 @@ import typography from '@tailwindcss/typography';
 import aspectRatio from '@tailwindcss/aspect-ratio';
 
 const config: Config = {
-  darkMode: 'class',
+  darkMode: 'class', // Explicitly set to 'class' for next-themes compatibility
   content: [
-    './src/components/**/*.{ts,tsx}',
-    './src/app/**/*.{ts,tsx}',
+    './src/app/**/*.{ts,tsx}', // All App Router files
+    './src/components/**/*.{ts,tsx}', // All components
   ],
   prefix: '',
   theme: {
