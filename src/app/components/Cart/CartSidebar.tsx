@@ -1,15 +1,17 @@
+'use client';
+
 import React from 'react';
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, MinusIcon, PlusIcon, UserIcon, ShoppingBagIcon, MapPinIcon, CogIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useStore } from '@/store/useStore';
 import { toast } from 'react-hot-toast';
 
 const CartSidebar: React.FC = () => {
   const { t } = useTranslation();
-  const { cart, cartOpen, setCartOpen, updateQuantity, removeFromCart, language, currency } = useStore();
+  const { cart, cartOpen, setCartOpen, updateQuantity, removeFromCart, language, currency, user, setUser } = useStore();
   const isRTL = language === 'ar';
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -34,6 +36,19 @@ const CartSidebar: React.FC = () => {
     toast.success(t('removedFromCart'));
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    setCartOpen(false);
+    window.location.href = `/${language}/`;
+  };
+
+  const menuItems = [
+    { id: 'profile', label: t('Profile'), icon: UserIcon, path: `/${language}/account` },
+    { id: 'orders', label: t('Orders'), icon: ShoppingBagIcon, path: `/${language}/account/orders` },
+    { id: 'addresses', label: t('Addresses'), icon: MapPinIcon, path: `/${language}/account/addresses` },
+    { id: 'settings', label: t('Settings'), icon: CogIcon, path: `/${language}/account/settings` },
+  ];
+
   return (
     <Transition.Root show={cartOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={setCartOpen}>
@@ -46,7 +61,7 @@ const CartSidebar: React.FC = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-contrast-900/75 transition-opacity" />
+          <div className="fixed inset-0 bg-[var(--contrast-900)]/75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
@@ -62,16 +77,16 @@ const CartSidebar: React.FC = () => {
                 leaveTo={isRTL ? '-translate-x-full' : 'translate-x-full'}
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-secondary-50 shadow-xl rounded-lg">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-[var(--card-bg-color)] shadow-xl rounded-lg">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
-                        <Dialog.Title className="text-lg font-semibold text-contrast-900 font-english">
+                        <Dialog.Title className="text-lg font-semibold text-[var(--text-color)] font-english">
                           {t('shoppingCart')}
                         </Dialog.Title>
                         <div className={`ml-3 flex h-7 items-center ${isRTL ? 'mr-3 ml-0' : ''}`}>
                           <button
                             type="button"
-                            className="p-2 text-base-600 hover:text-primary-600 hover-lift focus:ring-2 focus:ring-highlight-500 rounded"
+                            className="p-2 text-[var(--secondary-text-color)] hover:text-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] rounded"
                             onClick={() => setCartOpen(false)}
                             aria-label={t('closeCart')}
                           >
@@ -83,21 +98,21 @@ const CartSidebar: React.FC = () => {
                       <div className="mt-8">
                         {cart.length === 0 ? (
                           <div className="text-center py-12">
-                            <p className="text-base-600 mb-4 font-english">{t('cartEmpty')}</p>
+                            <p className="text-[var(--secondary-text-color)] mb-4 font-english">{t('cartEmpty')}</p>
                             <Link
-                              to="/shop"
+                              href={`/${language}/shop`}
                               onClick={() => setCartOpen(false)}
-                              className="inline-block bg-primary-600 text-secondary-50 px-6 py-2 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift font-english"
+                              className="inline-block bg-[var(--primary-color)] text-[var(--cream-white-500)] px-6 py-2 rounded-lg hover:bg-[var(--primary-800)] hover:text-[var(--cream-white-500)] transition-colors font-english"
                             >
                               {t('continueShopping')}
                             </Link>
                           </div>
                         ) : (
                           <div className="flow-root">
-                            <ul role="list" className="-my-6 divide-y divide-base-200">
+                            <ul role="list" className="-my-6 divide-y divide-[var(--border-color)]">
                               {cart.map((item) => (
                                 <li key={item.id} className="flex py-6">
-                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-base-200">
+                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-[var(--border-color)]">
                                     <img
                                       src={item.color.image}
                                       alt={isRTL ? item.product.nameAr : item.product.name}
@@ -107,12 +122,12 @@ const CartSidebar: React.FC = () => {
 
                                   <div className={`ml-4 flex flex-1 flex-col ${isRTL ? 'mr-4 ml-0' : ''}`}>
                                     <div>
-                                      <div className="flex justify-between text-base font-medium text-contrast-900 font-english">
+                                      <div className="flex justify-between text-base font-medium text-[var(--text-color)] font-english">
                                         <h3>
                                           <Link
-                                            to={`/product/${item.product.id}`}
+                                            href={`/${language}/product/${item.product.id}`}
                                             onClick={() => setCartOpen(false)}
-                                            className="hover:text-primary-600 transition-colors"
+                                            className="hover:text-[var(--primary-color)] transition-colors"
                                           >
                                             {isRTL ? item.product.nameAr : item.product.name}
                                           </Link>
@@ -121,7 +136,7 @@ const CartSidebar: React.FC = () => {
                                           {formatPrice(item.product.price * item.quantity)}
                                         </p>
                                       </div>
-                                      <p className="mt-1 text-sm text-base-600 font-english">
+                                      <p className="mt-1 text-sm text-[var(--secondary-text-color)] font-english">
                                         {isRTL ? item.color.nameAr : item.color.name} • {item.size}
                                       </p>
                                     </div>
@@ -129,29 +144,29 @@ const CartSidebar: React.FC = () => {
                                       <div className={`flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
                                         <button
                                           onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                                          className="p-1 border border-base-200 rounded hover:bg-base-100 hover-lift transition-colors"
+                                          className="p-1 border border-[var(--border-color)] rounded hover:bg-[var(--hover-bg-color)] transition-colors"
                                           disabled={item.quantity <= 1}
                                           aria-label={t('decreaseQuantity')}
                                         >
-                                          <MinusIcon className="w-4 h-4 text-contrast-900" />
+                                          <MinusIcon className="w-4 h-4 text-[var(--text-color)]" />
                                         </button>
-                                        <span className="mx-2 min-w-[2rem] text-center text-contrast-900 font-english">
+                                        <span className="mx-2 min-w-[2rem] text-center text-[var(--text-color)] font-english">
                                           {item.quantity}
                                         </span>
                                         <button
                                           onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                                          className="p-1 border border-base-200 rounded hover:bg-base-100 hover-lift transition-colors"
+                                          className="p-1 border border-[var(--border-color)] rounded hover:bg-[var(--hover-bg-color)] transition-colors"
                                           disabled={item.quantity >= item.product.stock}
                                           aria-label={t('increaseQuantity')}
                                         >
-                                          <PlusIcon className="w-4 h-4 text-contrast-900" />
+                                          <PlusIcon className="w-4 h-4 text-[var(--text-color)]" />
                                         </button>
                                       </div>
 
                                       <button
                                         type="button"
                                         onClick={() => handleRemoveFromCart(item.id)}
-                                        className="font-medium text-red-500 hover:text-red-600 transition-colors font-english"
+                                        className="font-medium text-red-600 dark:text-red-300 hover:text-red-700 dark:hover:text-red-200 transition-colors font-english"
                                         aria-label={t('removeItem')}
                                       >
                                         {t('remove')}
@@ -167,46 +182,78 @@ const CartSidebar: React.FC = () => {
                     </div>
 
                     {cart.length > 0 && (
-                      <div className="border-t border-base-200 px-4 py-6 sm:px-6">
+                      <div className="border-t border-[var(--border-color)] px-4 py-6 sm:px-6">
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between text-contrast-900 font-english">
+                          <div className="flex justify-between text-[var(--text-color)] font-english">
                             <span>{t('subtotal')}</span>
                             <span>{formatPrice(subtotal)}</span>
                           </div>
-                          <div className="flex justify-between text-contrast-900 font-english">
+                          <div className="flex justify-between text-[var(--text-color)] font-english">
                             <span>{t('shipping')}</span>
                             <span>{shipping === 0 ? t('free') : formatPrice(shipping)}</span>
                           </div>
-                          <div className="flex justify-between text-contrast-900 font-english">
+                          <div className="flex justify-between text-[var(--text-color)] font-english">
                             <span>{t('tax')}</span>
                             <span>{formatPrice(tax)}</span>
                           </div>
-                          <div className="flex justify-between text-base font-semibold text-contrast-900 border-t border-base-200 pt-2 font-english">
+                          <div className="flex justify-between text-base font-semibold text-[var(--text-color)] border-t border-[var(--border-color)] pt-2 font-english">
                             <span>{t('total')}</span>
                             <span>{formatPrice(total)}</span>
                           </div>
                         </div>
                         <div className="mt-6">
                           <Link
-                            to="/checkout"
+                            href={`/${language}/checkout`}
                             onClick={() => setCartOpen(false)}
-                            className="flex items-center justify-center rounded-lg bg-primary-600 text-secondary-50 px-6 py-3 text-base font-medium shadow-sm hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift w-full font-english"
+                            className="flex items-center justify-center rounded-lg bg-[var(--primary-color)] text-[var(--cream-white-500)] px-6 py-3 text-base font-medium shadow-sm hover:bg-[var(--primary-800)] hover:text-[var(--cream-white-500)] transition-colors w-full font-english"
                           >
                             {t('checkout')}
                           </Link>
                         </div>
-                        <div className="mt-6 flex justify-center text-center text-sm text-base-600 font-english">
+                        <div className="mt-6 flex justify-center text-center text-sm text-[var(--secondary-text-color)] font-english">
                           <p>
                             {t('or')}{' '}
                             <button
                               type="button"
-                              className="font-medium text-primary-600 hover:text-highlight-500 transition-colors font-english"
+                              className="font-medium text-[var(--primary-color)] hover:text-[var(--primary-800)] transition-colors font-english"
                               onClick={() => setCartOpen(false)}
                             >
                               {t('continueShopping')}
                             </button>
                           </p>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Account Navigation */}
+                    {user && (
+                      <div className="border-t border-[var(--border-color)] px-4 py-6 sm:px-6">
+                        <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">
+                          {t('Account')}
+                        </h3>
+                        <nav className="space-y-2">
+                          {menuItems.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                              <Link
+                                key={item.id}
+                                href={item.path}
+                                onClick={() => setCartOpen(false)}
+                                className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-[var(--secondary-text-color)] hover:bg-[var(--hover-bg-color)] hover:text-[var(--text-color)] ${isRTL ? 'space-x-reverse' : ''}`}
+                              >
+                                <Icon className="w-5 h-5" />
+                                <span>{item.label}</span>
+                              </Link>
+                            );
+                          })}
+                          <button
+                            onClick={handleLogout}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-red-600 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors ${isRTL ? 'space-x-reverse' : ''}`}
+                          >
+                            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                            <span>{t('Logout')}</span>
+                          </button>
+                        </nav>
                       </div>
                     )}
                   </div>
