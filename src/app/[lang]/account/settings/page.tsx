@@ -294,10 +294,10 @@ const SettingsPage: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-[var(--border-color)]">
                   <div>
-                    <h4 className="font-medium text-red-600 dark:text-red-300">{t('Delete Account')}</h4>
+                    <h4 className="font-medium text-red-600 dark:text-red-400 dark:text-red-300">{t('Delete Account')}</h4>
                     <p className="text-sm text-[var(--secondary-text-color)]">{t('Permanently delete your account and all data')}</p>
                   </div>
-                  <button className="text-red-600 dark:text-red-300 hover:text-red-700 dark:hover:text-red-200 transition-colors">
+                  <button className="text-red-600 dark:text-red-400 dark:text-red-300 hover:text-red-700 dark:hover:text-red-200 transition-colors">
                     {t('Delete Account')}
                   </button>
                 </div>

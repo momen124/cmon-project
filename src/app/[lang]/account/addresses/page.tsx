@@ -350,7 +350,7 @@ const AddressesPage: React.FC = () => {
                       </button>
                       <button
                         onClick={() => handleDelete(address.id)}
-                        className="p-2 text-[var(--secondary-text-color)] hover:text-red-600 dark:hover:text-red-300 transition-colors"
+                        className="p-2 text-[var(--secondary-text-color)] hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>

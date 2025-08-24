@@ -91,7 +91,7 @@ const Header: React.FC = () => {
                 className="bg-transparent border-none text-white hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 cursor-pointer font-medium rounded-md"
               >
                 {currencies.map((curr) => (
-                  <option key={curr.code} value={curr.code} className="text-gray-900 bg-white">
+                  <option key={curr.code} value={curr.code} className="text-[var(--text-color)] bg-white">
                     {curr.code} ({curr.symbol})
                   </option>
                 ))}
@@ -105,7 +105,7 @@ const Header: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${language}`} className="flex items-center space-x-2 hover-lift" title={t('home') || 'Home'}>
-              <span className="text-3xl font-bold text-blue-600 dark:text-blue-400 font-english">Cmon Elsonon</span>
+              <span className="text-3xl font-bold text-[var(--primary-color)] dark:text-blue-400 font-english">Cmon Elsonon</span>
             </Link>
 
             {/* Search Bar - Desktop */}
@@ -120,9 +120,9 @@ const Header: React.FC = () => {
                   placeholder={t('search') || 'Search'}
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className={`w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
+                  className={`w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-color)] dark:text-gray-100 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
                 />
-                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-gray-500 dark:text-gray-400 ${isRTL ? 'right-3' : 'left-3'}`} />
+                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-[var(--secondary-text-color) dark:text-[var(--secondary-text-color) ${isRTL ? 'right-3' : 'left-3'}`} />
               </div>
             </div>
 
@@ -130,24 +130,24 @@ const Header: React.FC = () => {
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
               <Link 
                 href={`/${language}/account`} 
-                className="p-2 hover-lift hover:text-blue-600 dark:hover:text-blue-400 transition-colors" 
+                className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors" 
                 aria-label={t('account') || 'Account'}
               >
-                <UserIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                <UserIcon className="w-6 h-6 text-gray-600 dark:text-[var(--secondary-text-color)" />
               </Link>
               <Link 
                 href={`/${language}/wishlist`} 
-                className="p-2 hover-lift hover:text-blue-600 dark:hover:text-blue-400 transition-colors" 
+                className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors" 
                 aria-label={t('wishlist') || 'Wishlist'}
               >
-                <HeartIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                <HeartIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
               </Link>
               <button
                 onClick={handleCartClick}
-                className="p-2 hover-lift hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative"
+                className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors relative"
                 aria-label={t('openCart', { count: cartItemsCount }) || `Open cart with ${cartItemsCount} items`}
               >
-                <ShoppingBagIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                <ShoppingBagIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
                 {cartItemsCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                     {cartItemsCount}
@@ -160,8 +160,8 @@ const Header: React.FC = () => {
                 aria-label={mobileMenuOpen ? (t('closeMenu') || 'Close menu') : (t('openMenu') || 'Open menu')}
               >
                 {mobileMenuOpen ? 
-                  <XMarkIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" /> : 
-                  <Bars3Icon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                  <XMarkIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" /> : 
+                  <Bars3Icon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
                 }
               </button>
             </div>
@@ -181,7 +181,7 @@ const Header: React.FC = () => {
                 >
                   <Link
                     href={`/${language}/shop?category=${category.slug}`}
-                    className={`flex items-center py-4 px-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
+                    className={`flex items-center py-4 px-2 text-[var(--text-color)] dark:text-gray-100 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
                   >
                     <span>{isRTL ? category.nameAr : category.name}</span>
                     {category.children && <ChevronDownIcon className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />}
@@ -208,9 +208,9 @@ const Header: React.FC = () => {
                   placeholder={t('search') || 'Search'}
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className={`w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
+                  className={`w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-color)] dark:text-gray-100 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
                 />
-                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-gray-500 dark:text-gray-400 ${isRTL ? 'right-3' : 'left-3'}`} />
+                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-[var(--secondary-text-color) dark:text-[var(--secondary-text-color) ${isRTL ? 'right-3' : 'left-3'}`} />
               </div>
             </div>
 
@@ -220,7 +220,7 @@ const Header: React.FC = () => {
                 <div key={category.id}>
                   <button
                     onClick={() => toggleCategory(category.id)}
-                    className="w-full flex justify-between px-4 py-3 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium hover-lift"
+                    className="w-full flex justify-between px-4 py-3 text-[var(--text-color)] dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-medium hover-lift"
                   >
                     <span className={`font-${isRTL ? 'arabic' : 'english'}`}>
                       {isRTL ? category.nameAr : category.name}
@@ -237,7 +237,7 @@ const Header: React.FC = () => {
                         <Link
                           key={subCategory.id}
                           href={`/${language}/shop?category=${subCategory.slug}`}
-                          className="block px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium font-english"
+                          className="block px-4 py-2 text-[var(--text-color)] dark:text-[var(--secondary-text-color) hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-medium font-english"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {isRTL ? subCategory.nameAr : subCategory.name}

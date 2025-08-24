@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="bg-neutral-500 text-white text-xs px-2 py-1 rounded">New</span>
             )}
             {product.bestseller && (
-              <span className="bg-highlight-500 text-contrast-900 text-xs px-2 py-1 rounded">Bestseller</span>
+              <span className="bg-highlight-500 text-[var(--text-color)] text-xs px-2 py-1 rounded">Bestseller</span>
             )}
             {product.featured && (
               <span className="bg-primary-500 text-white text-xs px-2 py-1 rounded">Featured</span>
@@ -59,9 +59,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
           >
             {isWishlisted ? (
-              <HeartSolidIcon className="w-4 h-4 text-red-500" />
+              <HeartSolidIcon className="w-4 h-4 text-red-500 dark:text-red-300" />
             ) : (
-              <HeartIcon className="w-4 h-4 text-gray-600" />
+              <HeartIcon className="w-4 h-4 text-[var(--text-color)]" />
             )}
           </button>
 
@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-contrast-900 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors"
+              className="bg-white text-[var(--text-color)] px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors"
             >
               <ShoppingBagIcon className="w-4 h-4" />
               Quick Add
@@ -79,10 +79,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Product Info */}
         <div className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="font-semibold text-[var(--text-color)] mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
             {product.name}
           </h3>
-          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+          <p className="text-sm text-[var(--text-color)] mb-2 line-clamp-2">
             {product.description}
           </p>
           
@@ -95,16 +95,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </span>
               ))}
             </div>
-            <span className="text-xs text-gray-500">({product.reviewCount})</span>
+            <span className="text-xs text-[var(--secondary-text-color)">({product.reviewCount})</span>
           </div>
 
           {/* Price */}
           <div className="flex items-center gap-2">
-            <span className="font-bold text-lg text-gray-900">
+            <span className="font-bold text-lg text-[var(--text-color)]">
               ${product.price}
             </span>
             {product.comparePrice && (
-              <span className="text-sm text-gray-500 line-through">
+              <span className="text-sm text-[var(--secondary-text-color) line-through">
                 ${product.comparePrice}
               </span>
             )}
@@ -121,7 +121,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               />
             ))}
             {product.colors.length > 4 && (
-              <span className="text-xs text-gray-500 ml-1">+{product.colors.length - 4}</span>
+              <span className="text-xs text-[var(--secondary-text-color) ml-1">+{product.colors.length - 4}</span>
             )}
           </div>
         </div>

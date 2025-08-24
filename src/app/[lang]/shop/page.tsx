@@ -144,17 +144,17 @@ const Shop: React.FC = () => {
           <Link href="/" className="hover:text-primary-600">{t('home')}</Link>
           <span>/</span>
           {currentCategory ? (
-            <span className="text-contrast-900 font-english">
+            <span className="text-[var(--text-color)] font-english">
               {isRTL ? currentCategory.nameAr : currentCategory.name}
             </span>
           ) : (
-            <span className="text-contrast-900 font-english">{t('shop')}</span>
+            <span className="text-[var(--text-color)] font-english">{t('sop')}</span>
           )}
         </div>
       </nav>
 
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-contrast-900 mb-4 font-english">
+        <h1 className="text-4xl font-bold text-[var(--text-color)] mb-4 font-english">
           {currentCategory 
             ? (isRTL ? currentCategory.nameAr : currentCategory.name)
             : t('shop')
@@ -169,7 +169,7 @@ const Shop: React.FC = () => {
         <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden lg:block'}`}>
           <div className="bg-secondary-50 rounded-lg shadow-sm border border-base-200 p-6 sticky top-4">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-contrast-900 font-english">{t('filters')}</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-color)] font-english">{t('filters')}</h3>
               <button
                 onClick={clearFilters}
                 className="text-sm text-primary-600 hover:text-highlight-500 font-english"
@@ -179,7 +179,7 @@ const Shop: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-contrast-900 mb-3 font-english">{t('priceRange')}</h4>
+              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('priceRange')}</h4>
               <div className="space-y-3">
                 <input
                   type="range"
@@ -197,7 +197,7 @@ const Shop: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-contrast-900 mb-3 font-english">{t('colors')}</h4>
+              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('colors')}</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {availableColors.map(color => (
                   <label key={color} className="flex items-center">
@@ -220,7 +220,7 @@ const Shop: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-contrast-900 mb-3 font-english">{t('sizes')}</h4>
+              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('sizes')}</h4>
               <div className="grid grid-cols-2 gap-2">
                 {availableSizes.map(size => (
                   <label key={size} className="flex items-center">
@@ -243,7 +243,7 @@ const Shop: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-contrast-900 mb-3 font-english">{t('availability')}</h4>
+              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('availability')}</h4>
               <div className="space-y-2">
                 <label className="flex items-center">
                   <input
@@ -304,7 +304,7 @@ const Shop: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border-base-200 rounded-lg text-sm text-contrast-900 focus:ring-highlight-500 focus:border-primary-600 bg-secondary-50 font-english"
+                className="border-base-200 rounded-lg text-sm text-[var(--text-color)] focus:ring-highlight-500 focus:border-primary-600 bg-secondary-50 font-english"
               >
                 <option value="featured">{t('featured')}</option>
                 <option value="newest">{t('newest')}</option>
@@ -319,11 +319,11 @@ const Shop: React.FC = () => {
           {sortedProducts.length === 0 ? (
             <div className="text-center py-12">
               <AdjustmentsHorizontalIcon className="w-16 h-16 mx-auto text-base-600" />
-              <h3 className="text-lg font-semibold text-contrast-900 mb-2 font-english">{t('noProductsFound')}</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-color)] mb-2 font-english">{t('noProductsFound')}</h3>
               <p className="text-base-600 mb-4 font-english">{t('adjustFilters')}</p>
               <button
                 onClick={clearFilters}
-                className="bg-primary-600 text-secondary-50 px-6 py-2 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift font-english"
+                className="bg-primary-600 text-secondary-50 px-6 py-2 rounded-lg hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors hover-lift font-english"
               >
                 {t('clearFilters')}
               </button>
@@ -348,9 +348,9 @@ const Shop: React.FC = () => {
             <div className="mt-12 flex justify-center">
               <nav className={`flex items-center space-x-2 ${isRTL ? 'space-x-reverse' : ''}`}>
                 <button className="px-3 py-2 text-sm text-base-600 hover:text-primary-600 hover-lift font-english">{t('previous')}</button>
-                <button className="px-3 py-2 text-sm bg-primary-600 text-secondary-50 rounded hover:bg-highlight-500 hover:text-contrast-900 font-english">1</button>
-                <button className="px-3 py-2 text-sm text-contrast-900 hover:text-primary-600 hover-lift font-english">2</button>
-                <button className="px-3 py-2 text-sm text-contrast-900 hover:text-primary-600 hover-lift font-english">3</button>
+                <button className="px-3 py-2 text-sm bg-primary-600 text-secondary-50 rounded hover:bg-highlight-500 hover:text-[var(--text-color)] font-english">1</button>
+                <button className="px-3 py-2 text-sm text-[var(--text-color)] hover:text-primary-600 hover-lift font-english">2</button>
+                <button className="px-3 py-2 text-sm text-[var(--text-color)] hover:text-primary-600 hover-lift font-english">3</button>
                 <button className="px-3 py-2 text-sm text-base-600 hover:text-primary-600 hover-lift font-english">{t('next')}</button>
               </nav>
             </div>

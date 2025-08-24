@@ -23,7 +23,7 @@ const ProductDetail: React.FC = () => {
   const isInWishlist = product ? wishlist.includes(product.id) : false;
 
   if (!product) {
-    return <div className="text-center py-20 text-contrast-900 font-english">Product not found</div>;
+    return <div className="text-center py-20 text-[var(--text-color)] font-english">Product not found</div>;
   }
 
   const formatPrice = (price: number) => {
@@ -96,7 +96,7 @@ const ProductDetail: React.FC = () => {
             <p className="text-sm text-base-600 mb-2 font-english">
               {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
             </p>
-            <h1 className="text-3xl font-bold text-contrast-900 mb-4 font-english">
+            <h1 className="text-3xl font-bold text-[var(--text-color)] mb-4 font-english">
               {isRTL ? product.nameAr : product.name}
             </h1>
 
@@ -119,7 +119,7 @@ const ProductDetail: React.FC = () => {
 
             {/* Price */}
             <div className="flex items-center space-x-4 mb-6">
-              <span className="text-3xl font-bold text-contrast-900 font-english">
+              <span className="text-3xl font-bold text-[var(--text-color)] font-english">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
@@ -127,7 +127,7 @@ const ProductDetail: React.FC = () => {
                   <span className="text-xl text-base-500 line-through font-english">
                     {formatPrice(product.originalPrice)}
                   </span>
-                  <span className="bg-highlight-500 text-contrast-900 text-sm px-2 py-1 rounded-full font-english">
+                  <span className="bg-highlight-500 text-[var(--text-color)] text-sm px-2 py-1 rounded-full font-english">
                     {discountPercentage}% OFF
                   </span>
                 </>
@@ -137,7 +137,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-contrast-900 mb-2 font-english">{t('description')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-2 font-english">{t('description')}</h3>
             <p className="text-base-600 font-english">
               {isRTL ? product.descriptionAr : product.description}
             </p>
@@ -145,7 +145,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Color Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-contrast-900 mb-3 font-english">{t('selectColor')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('selectColor')}</h3>
             <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
               {product.colors.map((color, index) => (
                 <button
@@ -172,7 +172,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Size Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-contrast-900 mb-3 font-english">{t('selectSize')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('selectSize')}</h3>
             <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'grid-cols-2-reverse' : ''}`}>
               {product.sizes.map((size) => (
                 <button
@@ -193,7 +193,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Quantity */}
           <div>
-            <h3 className="text-lg font-semibold text-contrast-900 mb-3 font-english">{t('quantity')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('quantity')}</h3>
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -201,7 +201,7 @@ const ProductDetail: React.FC = () => {
               >
                 -
               </button>
-              <span className="px-4 py-2 border border-base-200 rounded-lg min-w-[3rem] text-center text-contrast-900 font-english">
+              <span className="px-4 py-2 border border-base-200 rounded-lg min-w-[3rem] text-center text-[var(--text-color)] font-english">
                 {quantity}
               </span>
               <button
@@ -216,7 +216,7 @@ const ProductDetail: React.FC = () => {
           {/* Stock Status */}
           <div className="flex items-center space-x-2">
             <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className={`text-sm font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <span className={`text-sm font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600 dark:text-red-400'}`}>
               {product.stock > 0 ? `${t('inStock')} (${product.stock} available)` : t('outOfStock')}
             </span>
           </div>
@@ -226,7 +226,7 @@ const ProductDetail: React.FC = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="flex-1 bg-primary-600 text-secondary-50 py-3 px-6 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors disabled:bg-base-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover-lift font-english"
+              className="flex-1 bg-primary-600 text-secondary-50 py-3 px-6 rounded-lg hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors disabled:bg-base-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover-lift font-english"
             >
               <ShoppingBagIcon className="w-5 h-5" />
               <span>{t('addToCart')}</span>
@@ -236,7 +236,7 @@ const ProductDetail: React.FC = () => {
               className="p-3 border border-base-200 rounded-lg hover:bg-base-100 transition-colors hover-lift"
             >
               {isInWishlist ? (
-                <HeartIconSolid className="w-6 h-6 text-red-500" />
+                <HeartIconSolid className="w-6 h-6 text-red-500 dark:text-red-300" />
               ) : (
                 <HeartIcon className="w-6 h-6 text-base-600" />
               )}
@@ -257,21 +257,21 @@ const ProductDetail: React.FC = () => {
 
           {/* Specifications */}
           <div className="space-y-3 pt-6 border-t border-base-200">
-            <h3 className="text-lg font-semibold text-contrast-900 mb-4 font-english">{t('specifications')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">{t('specifications')}</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-base-600 font-english">{t('material')}</span>
-                <span className="font-medium text-contrast-900 font-english">{isRTL ? product.materialAr : product.material}</span>
+                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.materialAr : product.material}</span>
               </div>
               {product.threadCount && (
                 <div className="flex justify-between">
                   <span className="text-base-600 font-english">{t('threadCount')}</span>
-                  <span className="font-medium text-contrast-900 font-english">{product.threadCount}</span>
+                  <span className="font-medium text-[var(--text-color)] font-english">{product.threadCount}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-base-600 font-english">{t('careInstructions')}</span>
-                <span className="font-medium text-contrast-900 font-english">{isRTL ? product.careInstructionsAr : product.careInstructions}</span>
+                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.careInstructionsAr : product.careInstructions}</span>
               </div>
             </div>
           </div>

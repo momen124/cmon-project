@@ -90,7 +90,7 @@ const Search: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8 bg-secondary-50 animate-slide-up">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-contrast-900 mb-4 font-english">
+        <h1 className="text-3xl font-bold text-[var(--text-color)] mb-4 font-english">
           {searchQuery ? `${t('searchResultsFor')} "${searchQuery}"` : t('searchProducts')}
         </h1>
         
@@ -101,12 +101,12 @@ const Search: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={isRTL ? 'ابحث عن المنتجات...' : 'Search for products...'}
-              className={`w-full px-4 py-3 border border-base-200 rounded-lg bg-secondary-50 text-contrast-900 focus:outline-none focus:ring-2 focus:ring-highlight-500 font-english ${isRTL ? 'pr-12' : 'pl-12'}`}
+              className={`w-full px-4 py-3 border border-base-200 rounded-lg bg-secondary-50 text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-highlight-500 font-english ${isRTL ? 'pr-12' : 'pl-12'}`}
             />
             <MagnifyingGlassIcon className={`absolute top-3.5 w-6 h-6 text-base-600 ${isRTL ? 'right-3' : 'left-3'}`} />
             <button
               type="submit"
-              className={`absolute top-2 bottom-2 px-6 bg-primary-600 text-secondary-50 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift font-english ${isRTL ? 'left-2' : 'right-2'}`}
+              className={`absolute top-2 bottom-2 px-6 bg-primary-600 text-secondary-50 rounded-lg hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors hover-lift font-english ${isRTL ? 'left-2' : 'right-2'}`}
             >
               {t('search')}
             </button>
@@ -130,7 +130,7 @@ const Search: React.FC = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="border-base-200 rounded-lg text-sm text-contrast-900 focus:ring-highlight-500 focus:border-primary-600 bg-secondary-50 font-english"
+                  className="border-base-200 rounded-lg text-sm text-[var(--text-color)] focus:ring-highlight-500 focus:border-primary-600 bg-secondary-50 font-english"
                 >
                   <option value="relevance">{t('relevance')}</option>
                   <option value="newest">{t('newest')}</option>
@@ -148,7 +148,7 @@ const Search: React.FC = () => {
       {!searchQuery ? (
         <div className="text-center py-16">
           <MagnifyingGlassIcon className="w-24 h-24 mx-auto text-base-600" />
-          <h2 className="text-2xl font-semibold text-contrast-900 mb-4 font-english">{t('searchProducts')}</h2>
+          <h2 className="text-2xl font-semibold text-[var(--text-color)] mb-4 font-english">{t('searchProducts')}</h2>
           <p className="text-base-600 mb-8 max-w-md mx-auto font-english">
             {isRTL 
               ? 'اكتشف مجموعتنا الواسعة من منتجات القطن المصري الفاخرة'
@@ -157,7 +157,7 @@ const Search: React.FC = () => {
           </p>
           
           <div className="max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-contrast-900 mb-4 font-english">{t('popularSearches')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">{t('popularSearches')}</h3>
             <div className={`flex flex-wrap gap-2 justify-center ${isRTL ? 'space-x-reverse' : ''}`}>
               {['bed sheets', 'duvet', 'towels', 'cotton', 'pillows', 'queen size'].map((term) => (
                 <button
@@ -166,7 +166,7 @@ const Search: React.FC = () => {
                     setSearchQuery(term);
                     setSearchParams({ q: term });
                   }}
-                  className="bg-base-100 hover:bg-highlight-200 hover:text-contrast-900 px-4 py-2 rounded-full text-sm transition-colors hover-lift font-english"
+                  className="bg-base-100 hover:bg-highlight-200 hover:text-[var(--text-color)] px-4 py-2 rounded-full text-sm transition-colors hover-lift font-english"
                 >
                   {term}
                 </button>
@@ -177,7 +177,7 @@ const Search: React.FC = () => {
       ) : searchResults.length === 0 ? (
         <div className="text-center py-16">
           <AdjustmentsHorizontalIcon className="w-24 h-24 mx-auto text-base-600" />
-          <h2 className="text-2xl font-semibold text-contrast-900 mb-4 font-english">{t('noResultsFound')}</h2>
+          <h2 className="text-2xl font-semibold text-[var(--text-color)] mb-4 font-english">{t('noResultsFound')}</h2>
           <p className="text-base-600 mb-8 max-w-md mx-auto font-english">
             {isRTL 
               ? `لم نجد أي منتجات تطابق "${searchQuery}". جرب البحث بكلمات أخرى أو تصفح فئاتنا.`
@@ -186,7 +186,7 @@ const Search: React.FC = () => {
           </p>
           
           <div className="max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-contrast-900 mb-4 font-english">{t('searchSuggestions')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">{t('searchSuggestions')}</h3>
             <ul className="text-sm text-base-600 space-y-1 font-english">
               <li>{isRTL ? '• تأكد من الإملاء الصحيح' : '• Check your spelling'}</li>
               <li>{isRTL ? '• جرب كلمات أكثر عمومية' : '• Try more general keywords'}</li>

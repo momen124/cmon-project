@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   const isRTL = language === 'ar';
 
   return (
-    <footer className="bg-secondary-50 text-contrast-900 border-t border-base-200 animate-slide-up">
+    <footer className="bg-secondary-50 text-[var(--text-color)] border-t border-base-200 animate-slide-up">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
 
           {/* Customer Service */}
           <div>
-            <h4 className="font-semibold mb-4 text-contrast-900 font-english">{t('customerService')}</h4>
+            <h4 className="font-semibold mb-4 text-[var(--text-color)] font-english">{t('customerService')}</h4>
             <div className="space-y-2">
               <Link
                 href={`/${language}/static/about`}
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4 text-contrast-900 font-english">{t('quickLinks')}</h4>
+            <h4 className="font-semibold mb-4 text-[var(--text-color)] font-english">{t('quickLinks')}</h4>
             <div className="space-y-2">
               <Link
                 href={`/${language}/shop?category=bed-sheets`}
@@ -112,16 +112,16 @@ const Footer: React.FC = () => {
 
           {/* Newsletter */}
           <div>
-            <h4 className="font-semibold mb-4 text-contrast-900 font-english">{t('newsletter')}</h4>
+            <h4 className="font-semibold mb-4 text-[var(--text-color)] font-english">{t('newsletter')}</h4>
             <p className="text-base-600 mb-4 font-english line-clamp-3">{t('newsletterDiscount')}</p>
             <div className="flex glass rounded-md">
               <input
                 type="email"
                 placeholder={t('email')}
-                className={`flex-1 px-3 py-2 bg-transparent border border-base-200 rounded-l-md focus:outline-none focus:ring-2 focus:ring-highlight-500 text-contrast-900 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'rounded-l-none rounded-r-md' : ''}`}
+                className={`flex-1 px-3 py-2 bg-transparent border border-base-200 rounded-l-md focus:outline-none focus:ring-2 focus:ring-highlight-500 text-[var(--text-color)] font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'rounded-l-none rounded-r-md' : ''}`}
               />
               <button
-                className={`px-4 py-2 bg-primary-600 text-secondary-50 rounded-r-md hover:bg-highlight-500 hover:text-contrast-900 transition-colors hover-lift font-medium font-english ${isRTL ? 'rounded-r-none rounded-l-md' : ''}`}
+                className={`px-4 py-2 bg-primary-600 text-secondary-50 rounded-r-md hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors hover-lift font-medium font-english ${isRTL ? 'rounded-r-none rounded-l-md' : ''}`}
               >
                 {t('subscribe')}
               </button>

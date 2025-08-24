@@ -15,7 +15,7 @@ export default function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 bg-base-100 text-contrast-900 rounded-full hover:bg-highlight-500 dark:bg-base-800 dark:text-secondary-100 dark:hover:bg-highlight-700"
+        className="p-2 bg-base-100 text-[var(--text-color)] rounded-full hover:bg-highlight-500 dark:bg-base-800 dark:text-secondary-100 dark:hover:bg-highlight-700"
         aria-label="Switch to dark theme"
       >
         <MoonIcon className="w-5 h-5" />
@@ -26,7 +26,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="p-2 bg-base-100 text-contrast-900 rounded-full hover:bg-highlight-500 dark:bg-base-800 dark:text-secondary-100 dark:hover:bg-highlight-700"
+      className="p-2 bg-base-100 text-[var(--text-color)] rounded-full hover:bg-highlight-500 dark:bg-base-800 dark:text-secondary-100 dark:hover:bg-highlight-700"
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
     >
       {theme === 'dark' ? (

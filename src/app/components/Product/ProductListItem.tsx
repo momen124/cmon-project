@@ -82,7 +82,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               </span>
             )}
             {discountPercentage > 0 && (
-              <span className="bg-highlight-500 text-contrast-900 text-xs px-2 py-1 rounded-full font-english">
+              <span className="bg-highlight-500 text-[var(--text-color)] text-xs px-2 py-1 rounded-full font-english">
                 {discountPercentage}% {t('off')}
               </span>
             )}
@@ -98,7 +98,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                   {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
                 </div>
                 <Link href={`/product/${product.id}`}>
-                  <h3 className="text-xl font-bold text-contrast-900 mb-4 group-hover:text-primary-600 transition-colors font-english">
+                  <h3 className="text-xl font-bold text-[var(--text-color)] mb-4 group-hover:text-primary-600 transition-colors font-english">
                     {isRTL ? product.nameAr : product.name}
                   </h3>
                 </Link>
@@ -108,7 +108,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                 className={`p-3 border border-base-200 rounded-lg hover:bg-base-100 transition-colors hover-lift ${isRTL ? 'ml-2' : 'mr-2'}`}
               >
                 {isInWishlist ? (
-                  <HeartIconSolid className="h-6 w-6 text-red-500" />
+                  <HeartIconSolid className="h-6 w-6 text-red-500 dark:text-red-300" />
                 ) : (
                   <HeartIcon className="h-6 w-6 text-base-600" />
                 )}
@@ -140,12 +140,12 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
             <div className={`space-y-3 ${isRTL ? 'space-x-reverse' : ''}`}>
               <div className="flex justify-between">
                 <span className="text-base-600 font-english">{t('material')}</span>
-                <span className="font-medium text-contrast-900 font-english">{isRTL ? product.materialAr : product.material}</span>
+                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.materialAr : product.material}</span>
               </div>
               {product.threadCount && (
                 <div className="flex justify-between">
                   <span className="text-base-600 font-english">{t('threadCount')}</span>
-                  <span className="font-medium text-contrast-900 font-english">{product.threadCount}</span>
+                  <span className="font-medium text-[var(--text-color)] font-english">{product.threadCount}</span>
                 </div>
               )}
             </div>
@@ -154,7 +154,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           {/* Price and Actions */}
           <div className="flex items-center justify-between mt-6">
             <div className="flex items-center space-x-4">
-              <span className="text-3xl font-bold text-contrast-900 font-english">
+              <span className="text-3xl font-bold text-[var(--text-color)] font-english">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
@@ -165,13 +165,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
             </div>
 
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
-              <span className={`text-sm font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`text-sm font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600 dark:text-red-400'}`}>
                 {product.stock > 0 ? t('inStock') : t('outOfStock')}
               </span>
               <button
                 onClick={handleQuickAdd}
                 disabled={product.stock === 0}
-                className="bg-primary-600 text-secondary-50 py-3 px-6 rounded-lg hover:bg-highlight-500 hover:text-contrast-900 transition-colors disabled:bg-base-300 disabled:cursor-not-allowed flex items-center space-x-2 hover-lift font-english"
+                className="bg-primary-600 text-secondary-50 py-3 px-6 rounded-lg hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors disabled:bg-base-300 disabled:cursor-not-allowed flex items-center space-x-2 hover-lift font-english"
               >
                 <ShoppingBagIcon className="w-5 h-5" />
                 <span>{t('quickAdd')}</span>

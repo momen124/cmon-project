@@ -137,7 +137,7 @@
   .dark .bg-white {
     background-color: var(--card-bg-color) !important;
   }
-  .dark .text-gray-900 {
+  .dark .text-var-text-color {
     color: var(--text-color) !important;
   }
   .dark .text-gray-600 {

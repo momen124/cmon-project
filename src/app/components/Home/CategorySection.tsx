@@ -78,7 +78,7 @@ const CategorySection: React.FC = () => {
               emoji: '🏠',
               gradient: 'from-gray-100 to-gray-200',
               hoverGradient: 'group-hover:from-gray-200 group-hover:to-gray-300',
-              iconColor: 'text-gray-600 dark:text-gray-400'
+              iconColor: 'text-[var(--text-color)] dark:text-[var(--secondary-text-color)'
             };
             
             return (

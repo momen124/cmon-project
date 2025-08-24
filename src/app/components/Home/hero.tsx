@@ -60,7 +60,7 @@ const Hero: React.FC = () => {
               <Link
                 href={`/${language}/shop`}
                 onClick={handleShopNowClick}
-                className="group bg-highlight-500 hover:bg-highlight-600 text-contrast-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="group bg-highlight-500 hover:bg-highlight-600 text-[var(--text-color)] px-8 py-4 rounded-xl font-semibold transition-all duration-300 inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
                 aria-label={t('shopNow')}
               >
                 <ShoppingBagIcon className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
@@ -106,7 +106,7 @@ const Hero: React.FC = () => {
               </div>
 
               {/* Floating Badge */}
-              <div className="absolute -bottom-6 -right-6 bg-highlight-500 text-contrast-900 p-6 rounded-xl shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+              <div className="absolute -bottom-6 -right-6 bg-highlight-500 text-[var(--text-color)] p-6 rounded-xl shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <div className="text-center">
                   <div className="text-2xl font-bold">{t('yearsExperience')}</div>
                   <div className="text-sm font-medium">{t('craftsmanship')}</div>
