@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'next/navigation';
 import { StarIcon, HeartIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,15 @@ const ProductDetail: React.FC = () => {
   const isInWishlist = product ? wishlist.includes(product.id) : false;
 
   if (!product) {
-    return <div className="text-center py-20 text-[var(--text-color)] font-english">Product not found</div>;
+    return (
+      <div className="container mx-auto px-4 py-20">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔍</div>
+          <h2 className="text-2xl font-bold text-[var(--text-color)] mb-2 font-english">Product Not Found</h2>
+          <p className="text-[var(--secondary-text-color)] font-english">The product you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
   }
 
   const formatPrice = (price: number) => {
@@ -34,24 +42,24 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      toast.error(t('selectSize'));
+      toast.error(t('selectSize') || 'Please select a size');
       return;
     }
     if (!selectedColor) {
-      toast.error(t('selectColor'));
+      toast.error(t('selectColor') || 'Please select a color');
       return;
     }
     addToCart(product, selectedSize.name, selectedColor, quantity);
-    toast.success(t('addedToCart'));
+    toast.success(t('addedToCart') || 'Added to cart');
   };
 
   const handleWishlistToggle = () => {
     if (isInWishlist) {
       removeFromWishlist(product.id);
-      toast.success(t('removedFromWishlist'));
+      toast.success(t('removedFromWishlist') || 'Removed from wishlist');
     } else {
       addToWishlist(product.id);
-      toast.success(t('addedToWishlist'));
+      toast.success(t('addedToWishlist') || 'Added to wishlist');
     }
   };
 
@@ -59,41 +67,61 @@ const ProductDetail: React.FC = () => {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
+  const getCurrentImage = () => {
+    if (selectedColor && selectedColor.image) {
+      return selectedColor.image;
+    }
+    if (product.images && product.images[activeImageIndex]) {
+      return product.images[activeImageIndex];
+    }
+    return 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image';
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 bg-secondary-50 animate-slide-up">
+    <div className="container mx-auto px-4 py-8 bg-[var(--background-color)] animate-slide-up">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Image Gallery */}
         <div className="space-y-4">
-          <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-base-100 to-base-200">
+          <div className="aspect-square overflow-hidden rounded-lg border border-[var(--border-color)]">
             <img
-              src={selectedColor ? selectedColor.image : product.images[activeImageIndex]}
+              src={getCurrentImage()}
               alt={isRTL ? product.nameAr : product.name}
-              className="w-full h-full object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover cursor-zoom-in hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                e.currentTarget.src = 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image';
+              }}
             />
           </div>
-          <div className="grid grid-cols-4 gap-4">
-            {product.images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveImageIndex(index)}
-                className={`aspect-square overflow-hidden rounded-lg border-2 hover-lift ${
-                  activeImageIndex === index ? 'border-primary-600' : 'border-base-200'
-                }`}
-              >
-                <img
-                  src={image}
-                  alt={`${isRTL ? product.nameAr : product.name} ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
+          
+          {/* Thumbnail Gallery */}
+          {product.images && product.images.length > 1 && (
+            <div className="grid grid-cols-4 gap-4">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImageIndex(index)}
+                  className={`aspect-square overflow-hidden rounded-lg border-2 hover:bg-[var(--hover-bg-color)] transition-all ${
+                    activeImageIndex === index ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
+                  }`}
+                >
+                  <img
+                    src={image || 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail'}
+                    alt={`${isRTL ? product.nameAr : product.name} ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail';
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Information */}
         <div className="space-y-6">
           <div>
-            <p className="text-sm text-base-600 mb-2 font-english">
+            <p className="text-sm text-[var(--secondary-text-color)] mb-2 font-english">
               {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
             </p>
             <h1 className="text-3xl font-bold text-[var(--text-color)] mb-4 font-english">
@@ -107,13 +135,13 @@ const ProductDetail: React.FC = () => {
                   <StarIcon
                     key={i}
                     className={`w-5 h-5 ${
-                      i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-base-300'
+                      i < Math.floor(product.rating) ? 'text-yellow-400 dark:text-yellow-300 fill-current' : 'text-[var(--secondary-text-color)]'
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-sm text-base-600 font-english">
-                {product.rating} ({product.reviewCount} {t('reviews')})
+              <span className="text-sm text-[var(--secondary-text-color)] font-english">
+                {product.rating} ({product.reviewCount} {t('reviews') || 'reviews'})
               </span>
             </div>
 
@@ -124,10 +152,10 @@ const ProductDetail: React.FC = () => {
               </span>
               {product.originalPrice && (
                 <>
-                  <span className="text-xl text-base-500 line-through font-english">
+                  <span className="text-xl text-[var(--secondary-text-color)] line-through font-english">
                     {formatPrice(product.originalPrice)}
                   </span>
-                  <span className="bg-highlight-500 text-[var(--text-color)] text-sm px-2 py-1 rounded-full font-english">
+                  <span className="bg-[var(--primary-color)] text-[var(--cream-white-500)] text-sm px-3 py-1 rounded-full font-english font-medium">
                     {discountPercentage}% OFF
                   </span>
                 </>
@@ -137,34 +165,38 @@ const ProductDetail: React.FC = () => {
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-2 font-english">{t('description')}</h3>
-            <p className="text-base-600 font-english">
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-2 font-english">
+              {t('description') || 'Description'}
+            </h3>
+            <p className="text-[var(--secondary-text-color)] font-english leading-relaxed">
               {isRTL ? product.descriptionAr : product.description}
             </p>
           </div>
 
           {/* Color Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('selectColor')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
+              {t('selectColor') || 'Select Color'}
+            </h3>
             <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
               {product.colors.map((color, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedColor(color)}
-                  className={`relative w-12 h-12 rounded-full border-4 hover-lift ${
-                    selectedColor?.name === color.name ? 'border-primary-600' : 'border-base-200'
+                  className={`relative w-12 h-12 rounded-full border-4 hover:bg-[var(--hover-bg-color)] transition-all ${
+                    selectedColor?.name === color.name ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
                   }`}
                   style={{ backgroundColor: color.hex }}
                   title={isRTL ? color.nameAr : color.name}
                 >
                   {selectedColor?.name === color.name && (
-                    <div className="absolute inset-0 rounded-full border-2 border-secondary-50" />
+                    <div className="absolute inset-0 rounded-full border-2 border-[var(--cream-white-500)]/80" />
                   )}
                 </button>
               ))}
             </div>
             {selectedColor && (
-              <p className="text-sm text-base-600 mt-2 font-english">
+              <p className="text-sm text-[var(--secondary-text-color)] mt-2 font-english">
                 {isRTL ? selectedColor.nameAr : selectedColor.name}
               </p>
             )}
@@ -172,20 +204,22 @@ const ProductDetail: React.FC = () => {
 
           {/* Size Selection */}
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('selectSize')}</h3>
-            <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'grid-cols-2-reverse' : ''}`}>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
+              {t('selectSize') || 'Select Size'}
+            </h3>
+            <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'direction-rtl' : ''}`}>
               {product.sizes.map((size) => (
                 <button
                   key={size.name}
                   onClick={() => setSelectedSize(size)}
-                  className={`py-2 px-4 border rounded-lg text-center transition-colors hover-lift flex flex-col items-center font-english ${
+                  className={`py-3 px-4 border rounded-lg text-center transition-all hover:bg-[var(--hover-bg-color)] flex flex-col items-center font-english ${
                     selectedSize?.name === size.name
-                      ? 'border-primary-600 bg-primary-600 text-secondary-50'
-                      : 'border-base-200 hover:border-highlight-500'
+                      ? 'bg-[var(--primary-color)] text-[var(--cream-white-500)] border-[var(--primary-color)]'
+                      : 'border-[var(--border-color)] text-[var(--text-color)]'
                   }`}
                 >
                   <span className="font-medium">{size.name}</span>
-                  <span className="text-xs text-base-600">{size.cm} cm</span>
+                  <span className="text-xs opacity-75">{size.cm} cm</span>
                 </button>
               ))}
             </div>
@@ -193,31 +227,38 @@ const ProductDetail: React.FC = () => {
 
           {/* Quantity */}
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">{t('quantity')}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
+              {t('quantity') || 'Quantity'}
+            </h3>
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-2 border border-base-200 rounded-lg hover:bg-base-100 hover-lift"
+                className="p-2 border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover-bg-color)] w-10 h-10 flex items-center justify-center"
               >
-                -
+                <span className="text-[var(--text-color)]">-</span>
               </button>
-              <span className="px-4 py-2 border border-base-200 rounded-lg min-w-[3rem] text-center text-[var(--text-color)] font-english">
+              <span className="px-4 py-2 border border-[var(--border-color)] rounded-lg min-w-[3rem] text-center text-[var(--text-color)] font-english bg-[var(--card-bg-color)]">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="p-2 border border-base-200 rounded-lg hover:bg-base-100 hover-lift"
+                className="p-2 border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover-bg-color)] w-10 h-10 flex items-center justify-center"
               >
-                +
+                <span className="text-[var(--text-color)]">+</span>
               </button>
             </div>
           </div>
 
           {/* Stock Status */}
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className={`text-sm font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600 dark:text-red-400'}`}>
-              {product.stock > 0 ? `${t('inStock')} (${product.stock} available)` : t('outOfStock')}
+            <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400'}`} />
+            <span className={`text-sm font-english ${
+              product.stock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+            }`}>
+              {product.stock > 0 
+                ? `${t('inStock') || 'In Stock'} (${product.stock} available)` 
+                : t('outOfStock') || 'Out of Stock'
+              }
             </span>
           </div>
 
@@ -226,52 +267,58 @@ const ProductDetail: React.FC = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="flex-1 bg-primary-600 text-secondary-50 py-3 px-6 rounded-lg hover:bg-highlight-500 hover:text-[var(--text-color)] transition-colors disabled:bg-base-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover-lift font-english"
+              className="flex-1 bg-[var(--primary-color)] text-[var(--cream-white-500)] py-4 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 hover:bg-[var(--primary-800)] transition-all font-english"
             >
               <ShoppingBagIcon className="w-5 h-5" />
-              <span>{t('addToCart')}</span>
+              <span>{t('addToCart') || 'Add to Cart'}</span>
             </button>
             <button
               onClick={handleWishlistToggle}
-              className="p-3 border border-base-200 rounded-lg hover:bg-base-100 transition-colors hover-lift"
+              className="p-4 border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover-bg-color)] transition-all"
             >
               {isInWishlist ? (
-                <HeartIconSolid className="w-6 h-6 text-red-500 dark:text-red-300" />
+                <HeartIconSolid className="w-6 h-6 text-red-500 dark:text-red-400" />
               ) : (
-                <HeartIcon className="w-6 h-6 text-base-600" />
+                <HeartIcon className="w-6 h-6 text-[var(--text-color)]" />
               )}
             </button>
           </div>
 
           {/* Features */}
-          <div className="space-y-3 pt-6 border-t border-base-200">
+          <div className="space-y-3 pt-6 border-t border-[var(--border-color)]">
             <div className="flex items-center space-x-3">
-              <TruckIcon className="w-5 h-5 text-base-600" />
-              <span className="text-sm text-base-600 font-english">Free shipping on orders over 1000 EGP</span>
+              <TruckIcon className="w-5 h-5 text-[var(--secondary-text-color)]" />
+              <span className="text-sm text-[var(--secondary-text-color)] font-english">Free shipping on orders over 1000 EGP</span>
             </div>
             <div className="flex items-center space-x-3">
-              <ShieldCheckIcon className="w-5 h-5 text-base-600" />
-              <span className="text-sm text-base-600 font-english">30-day return policy</span>
+              <ShieldCheckIcon className="w-5 h-5 text-[var(--secondary-text-color)]" />
+              <span className="text-sm text-[var(--secondary-text-color)] font-english">30-day return policy</span>
             </div>
           </div>
 
           {/* Specifications */}
-          <div className="space-y-3 pt-6 border-t border-base-200">
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">{t('specifications')}</h3>
+          <div className="space-y-3 pt-6 border-t border-[var(--border-color)]">
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">
+              {t('specifications') || 'Specifications'}
+            </h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-base-600 font-english">{t('material')}</span>
-                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.materialAr : product.material}</span>
+                <span className="text-[var(--secondary-text-color)] font-english">{t('material') || 'Material'}</span>
+                <span className="font-medium text-[var(--text-color)] font-english">
+                  {isRTL ? product.materialAr : product.material}
+                </span>
               </div>
               {product.threadCount && (
                 <div className="flex justify-between">
-                  <span className="text-base-600 font-english">{t('threadCount')}</span>
+                  <span className="text-[var(--secondary-text-color)] font-english">{t('threadCount') || 'Thread Count'}</span>
                   <span className="font-medium text-[var(--text-color)] font-english">{product.threadCount}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-base-600 font-english">{t('careInstructions')}</span>
-                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.careInstructionsAr : product.careInstructions}</span>
+                <span className="text-[var(--secondary-text-color)] font-english">{t('careInstructions') || 'Care Instructions'}</span>
+                <span className="font-medium text-[var(--text-color)] font-english text-right max-w-xs">
+                  {isRTL ? product.careInstructionsAr : product.careInstructions}
+                </span>
               </div>
             </div>
           </div>
