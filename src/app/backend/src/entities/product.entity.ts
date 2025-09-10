@@ -19,6 +19,7 @@ export class Product {
   @Column({ type: 'text', nullable: true })
   description_ar: string;
 
+  @Index()
   @Column({ type: 'decimal' })
   price: number;
 
@@ -29,9 +30,11 @@ export class Product {
   @Column()
   category_id: string;
 
+  @Index()
   @Column({ type: 'jsonb', nullable: true })
   sizes: object;
 
+  @Index()
   @Column({ type: 'jsonb', nullable: true })
   colors: object;
 
