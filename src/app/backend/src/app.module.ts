@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './entities/user.entity';
 import { Product } from './entities/product.entity';
@@ -57,7 +56,7 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
     WishlistModule,
   ],
-  controllers: [AuthController],
+  controllers: [],
   providers: [
     AppService,
     SeedService,
