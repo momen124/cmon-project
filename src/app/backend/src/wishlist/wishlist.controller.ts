@@ -2,7 +2,7 @@ import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, Validat
 import { WishlistService } from './wishlist.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../entities/user.entity';
-import { AddToWishlistDto } from './dto/w';
+import { AddToWishlistDto } from './dto/add-to-wishlist.dto';
 
 @Controller('wishlist')
 @UseGuards(JwtAuthGuard)
