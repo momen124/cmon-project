@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Post, UseGuards, Body, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';  // Import AppService for AppController
-import { User } from 'src/entities/user.entity';
+import { User } from './entities/user.entity';
 import { AuthService } from './auth/auth.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';

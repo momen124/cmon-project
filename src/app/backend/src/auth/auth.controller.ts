@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { User } from 'src/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
