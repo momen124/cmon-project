@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './entities/user.entity';
+import { User } from './entities/user.entity';  // Import entities
 import { Product } from './entities/product.entity';
 import { SeedService } from './seed/seed.service';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
@@ -12,14 +13,11 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { EmailModule } from './email/email.module';
 import { OrdersModule } from './orders/orders.module';
-
 import { WishlistModule } from './wishlist/wishlist.module';
-import { Order } from './entities/order.entity';
-import { OrderItem } from './entities/order-item.entity';
-import { Category } from './entities/category.entity';
-import { PasswordResetToken } from './entities/password-reset-token.entity';
-import { Wishlist } from './entities/wishlist.entity';
 import { CategoriesModule } from './categories/categories.module';
+// Import other entities as needed, e.g.,
+// import { Order } from './entities/order.entity';
+// import { Category } from './entities/category.entity';
 
 @Module({
   imports: [
@@ -42,12 +40,14 @@ import { CategoriesModule } from './categories/categories.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, Product, Order, OrderItem, Category, PasswordResetToken, Wishlist],
+        entities: [User, Product /* Add Order, Category, etc. if needed */],
         synchronize: false,
         logging: true,
       }),
       inject: [ConfigService],
     }),
+    // Add this line to provide repos for SeedService (and any root providers)
+    TypeOrmModule.forFeature([User, Product]),
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -56,10 +56,10 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
     WishlistModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     AppService,
-    SeedService,
+    SeedService,  // Now has access to User/Product repos
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

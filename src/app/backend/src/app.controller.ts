@@ -1,9 +1,20 @@
-import { Controller, Request, Post, UseGuards, Body, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Request, Post, UseGuards, Body, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { AppService } from './app.service';  // Import AppService for AppController
 import { User } from 'src/entities/user.entity';
 import { AuthService } from './auth/auth.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 import { ResetPasswordDto } from './auth/dto/reset-password.dto';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();  // Returns "Hello World!"
+  }
+}
 
 @Controller('auth')
 export class AuthController {
