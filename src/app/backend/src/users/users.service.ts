@@ -18,15 +18,21 @@ export class UsersService {
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { email } });
+    const user = await this.usersRepository.findOne({ where: { email } });
+    return user ?? undefined;
   }
 
   async findById(id: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { id } });
+    const user = await this.usersRepository.findOne({ where: { id } });
+    return user ?? undefined;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     await this.usersRepository.update(id, updateUserDto);
-    return this.findById(id);
+    const updatedUser = await this.findById(id);
+    if (!updatedUser) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    return updatedUser;
   }
 }

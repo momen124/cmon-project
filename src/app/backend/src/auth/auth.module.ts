@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { EmailModule } from '../email/email.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PasswordResetToken } from 'src/entities/password-reset-token.entity';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { EmailModule } from '../email/email.module';
       inject: [ConfigService],
     }),
     EmailModule,
+    TypeOrmModule.forFeature([PasswordResetToken]),
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

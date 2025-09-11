@@ -12,6 +12,9 @@ export class UsersController {
   @Get('me')
   async getProfile(@Request() req: { user: { userId: string } }): Promise<Omit<User, 'password'>> {
     const user = await this.usersService.findById(req.user.userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
     const { password, ...result } = user;
     return result;
   }

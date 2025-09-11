@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
+import { AuthController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './entities/user.entity';
 import { Product } from './entities/product.entity';
@@ -12,6 +12,15 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { EmailModule } from './email/email.module';
+import { OrdersModule } from './orders/orders.module';
+
+import { WishlistModule } from './wishlist/wishlist.module';
+import { Order } from './entities/order.entity';
+import { OrderItem } from './entities/order-item.entity';
+import { Category } from './entities/category,entity';
+import { PasswordResetToken } from './entities/password-reset-token.entity';
+import { Wishlist } from './entities/whislist.entity';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -34,19 +43,21 @@ import { EmailModule } from './email/email.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, Product],
+        entities: [User, Product, Order, OrderItem, Category, PasswordResetToken, Wishlist],
         synchronize: false,
         logging: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Product]),
     AuthModule,
     UsersModule,
     ProductsModule,
     EmailModule,
+    OrdersModule,
+    CategoriesModule,
+    WishlistModule,
   ],
-  controllers: [AppController],
+  controllers: [AuthController],
   providers: [
     AppService,
     SeedService,
