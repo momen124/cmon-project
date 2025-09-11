@@ -7,10 +7,10 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "collectCoverageFrom": [
-    "src/**/*.(t|j)s"
+    "**/*.(t|j)s"
   ],
   "coverageDirectory": "../coverage-e2e",
-  "setupFilesAfterEnv": ["<rootDir>/setup-e2e.ts"],
+  "setupFilesAfterEnv": ["<rootDir>/setup-e2e.ts"],  
   "testTimeout": 30000,
   "maxWorkers": 1
 }

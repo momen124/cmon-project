@@ -1,32 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../src/entities/user.entity';
+import { PasswordResetToken } from '../src/entities/password-reset-token.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { PasswordResetToken } from '../src/entities/password-reset-token.entity';
+import { app, userRepository } from './setup-e2e';
 
+import request from 'supertest';
 describe('AuthController (e2e)', () => {
-  let app: INestApplication;
-  let userRepository: Repository<User>;
   let tokenRepository: Repository<PasswordResetToken>;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
-
-    userRepository = moduleFixture.get<Repository<User>>(getRepositoryToken(User));
-    tokenRepository = moduleFixture.get<Repository<PasswordResetToken>>(getRepositoryToken(PasswordResetToken));
+  beforeAll(() => {
+    tokenRepository = app.get<Repository<PasswordResetToken>>(getRepositoryToken(PasswordResetToken));
   });
 
-  afterEach(async () => {
-    await app.close();
+  beforeEach(async () => {
+    // Clean up tokens as well
+    await tokenRepository.delete({});
   });
 
   it('/auth/register (POST)', async () => {
