@@ -9,7 +9,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { EmailModule } from '../email/email.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PasswordResetToken } from 'src/entities/password-reset-token.entity';
+import { PasswordResetToken } from '../entities/password-reset-token.entity';
 
 @Module({
   imports: [
