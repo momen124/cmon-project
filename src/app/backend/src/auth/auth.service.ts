@@ -8,7 +8,7 @@ import * as crypto from 'crypto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { EmailService } from '../email/email.service';
-import { PasswordResetToken } from 'src/entities/password-reset-token.entity';
+import { PasswordResetToken } from '../entities/password-reset-token.entity';
 
 @Injectable()
 export class AuthService {
