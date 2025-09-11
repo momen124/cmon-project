@@ -17,9 +17,9 @@ import { OrdersModule } from './orders/orders.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
-import { Category } from './entities/category,entity';
+import { Category } from './entities/category.entity';
 import { PasswordResetToken } from './entities/password-reset-token.entity';
-import { Wishlist } from './entities/whislist.entity';
+import { Wishlist } from './entities/wishlist.entity';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
