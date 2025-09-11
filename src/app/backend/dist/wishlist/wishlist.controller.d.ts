@@ -9,7 +9,7 @@ export declare class WishlistController {
     }): Promise<import("../entities/product.entity").Product[]>;
     addToWishlist(req: {
         user: User;
-    }, addToWishlistDto: AddToWishlistDto): Promise<import("../entities/whislist.entity").Wishlist>;
+    }, addToWishlistDto: AddToWishlistDto): Promise<import("../entities/wishlist.entity").Wishlist>;
     removeFromWishlist(productId: string, req: {
         user: User;
     }): Promise<void>;

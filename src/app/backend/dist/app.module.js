@@ -25,9 +25,9 @@ const orders_module_1 = require("./orders/orders.module");
 const wishlist_module_1 = require("./wishlist/wishlist.module");
 const order_entity_1 = require("./entities/order.entity");
 const order_item_entity_1 = require("./entities/order-item.entity");
-const category_entity_1 = require("./entities/category,entity");
+const category_entity_1 = require("./entities/category.entity");
 const password_reset_token_entity_1 = require("./entities/password-reset-token.entity");
-const whislist_entity_1 = require("./entities/whislist.entity");
+const wishlist_entity_1 = require("./entities/wishlist.entity");
 const categories_module_1 = require("./categories/categories.module");
 let AppModule = class AppModule {
 };
@@ -54,7 +54,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USERNAME'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_DATABASE'),
-                    entities: [user_entity_1.User, product_entity_1.Product, order_entity_1.Order, order_item_entity_1.OrderItem, category_entity_1.Category, password_reset_token_entity_1.PasswordResetToken, whislist_entity_1.Wishlist],
+                    entities: [user_entity_1.User, product_entity_1.Product, order_entity_1.Order, order_item_entity_1.OrderItem, category_entity_1.Category, password_reset_token_entity_1.PasswordResetToken, wishlist_entity_1.Wishlist],
                     synchronize: false,
                     logging: true,
                 }),

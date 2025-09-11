@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const product_entity_1 = require("../entities/product.entity");
-const whislist_entity_1 = require("../entities/whislist.entity");
+const wishlist_entity_1 = require("../entities/wishlist.entity");
 let WishlistService = class WishlistService {
     wishlistRepository;
     productsRepository;
@@ -57,7 +57,7 @@ let WishlistService = class WishlistService {
 exports.WishlistService = WishlistService;
 exports.WishlistService = WishlistService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(whislist_entity_1.Wishlist)),
+    __param(0, (0, typeorm_1.InjectRepository)(wishlist_entity_1.Wishlist)),
     __param(1, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository])

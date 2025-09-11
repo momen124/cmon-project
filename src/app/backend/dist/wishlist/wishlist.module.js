@@ -12,13 +12,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const wishlist_controller_1 = require("./wishlist.controller");
 const wishlist_service_1 = require("./wishlist.service");
 const products_module_1 = require("../products/products.module");
-const whislist_entity_1 = require("../entities/whislist.entity");
+const wishlist_entity_1 = require("../entities/wishlist.entity");
 let WishlistModule = class WishlistModule {
 };
 exports.WishlistModule = WishlistModule;
 exports.WishlistModule = WishlistModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([whislist_entity_1.Wishlist]), products_module_1.ProductsModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([wishlist_entity_1.Wishlist]), products_module_1.ProductsModule],
         controllers: [wishlist_controller_1.WishlistController],
         providers: [wishlist_service_1.WishlistService],
     })
