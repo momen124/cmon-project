@@ -1,32 +1,33 @@
 import { DataSource } from 'typeorm';
-import { User } from './entities/user.entity';
-import { Product } from './entities/product.entity';
-import { Order } from './entities/order.entity';
-import { OrderItem } from './entities/order-item.entity';
-import { Category } from './entities/category.entity';
-import { PasswordResetToken } from './entities/password-reset-token.entity';
-import { Wishlist } from './entities/wishlist.entity';
+import { ConfigService } from '@nestjs/config';
+import { config } from 'dotenv';
 
-// Determine if we're in test environment
-const isTest = process.env.NODE_ENV === 'test';
+// Load environment variables based on NODE_ENV
+if (process.env.NODE_ENV === 'test') {
+  config({ path: '.env.test' });
+} else {
+  config();
+}
+
+const configService = new ConfigService();
 
 export default new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME || 'postgres',
-  password: process.env.DB_PASSWORD || 'your_password',
-  database: isTest ? 'cmon-project-test' : process.env.DB_DATABASE || 'cmon-project',
+  host: configService.get<string>('DB_HOST', 'localhost'),
+  port: configService.get<number>('DB_PORT', 5432),
+  username: configService.get<string>('DB_USERNAME', 'postgres'),
+  password: configService.get<string>('DB_PASSWORD', 'your_password'),
+  database: configService.get<string>('DB_DATABASE', 'cmon-project'),
   entities: [
-    User, 
-    Product, 
-    Order, 
-    OrderItem, 
-    Category, 
-    PasswordResetToken, 
-    Wishlist
+    process.env.NODE_ENV === 'production' 
+      ? 'dist/**/*.entity{.ts,.js}'
+      : 'src/**/*.entity{.ts,.js}'
   ],
-  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-  synchronize: isTest, // Auto-create schema in test environment
-  dropSchema: isTest, // Drop schema in test environment
+  migrations: [
+    process.env.NODE_ENV === 'production' 
+      ? 'dist/migrations/*{.ts,.js}'
+      : 'src/migrations/*{.ts,.js}'
+  ],
+  synchronize: false,
+  logging: process.env.NODE_ENV === 'development',
 });

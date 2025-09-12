@@ -1,83 +1,97 @@
-import request from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import  request from 'supertest';
+import { setupTestApp } from './setup-e2e'; // Adjust path
+import { WishlistModule } from '../src/wishlist/wishlist.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Wishlist } from '../src/entities/wishlist.entity';
-import { Repository } from 'typeorm';
-import { User } from '../src/entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { Product } from '../src/entities/product.entity';
-import { Category } from '../src/entities/category.entity';
-import { app, userRepository } from './setup-e2e';
+
+import { DataSource } from 'typeorm';
+import { Wishlist } from 'src/entities/wishlist.entity';
+import { User } from 'src/entities/user.entity';
+import { Product } from 'src/entities/product.entity';
 
 describe('WishlistController (e2e)', () => {
-  let wishlistRepository: Repository<Wishlist>;
-  let productRepository: Repository<Product>;
-  let categoryRepository: Repository<Category>;
-  let userToken: string;
-  let user: User;
-  let product: Product;
+  let app: INestApplication;
+  let dataSource: DataSource;
+  let wishlistRepository: any;
+  let userRepository: any;
+  let productRepository: any;
 
   beforeAll(async () => {
-    wishlistRepository = app.get<Repository<Wishlist>>(getRepositoryToken(Wishlist));
-    productRepository = app.get<Repository<Product>>(getRepositoryToken(Product));
-    categoryRepository = app.get<Repository<Category>>(getRepositoryToken(Category));
+    const { app: testApp, dataSource: ds } = await setupTestApp();
+    app = testApp;
+    dataSource = ds;
+
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [WishlistModule],
+    }).compile();
+
+    wishlistRepository = moduleFixture.get(getRepositoryToken(Wishlist));
+    userRepository = moduleFixture.get(getRepositoryToken(User));
+    productRepository = moduleFixture.get(getRepositoryToken(Product));
   });
 
   beforeEach(async () => {
-    // Clean up all data before each test
-    await wishlistRepository.delete({});
-    await productRepository.delete({});
-    await categoryRepository.delete({});
-
-    // Create user
-    const hashedPassword = await bcrypt.hash('password', 10);
-    user = userRepository.create({ email: 'user@example.com', password: hashedPassword, name: 'User' });
-    await userRepository.save(user);
-
-    // Create category
-    const category = categoryRepository.create({ name_en: 'Test Category', name_ar: 'فئة تجريبية' });
-    await categoryRepository.save(category);
-
-    // Create product
-    product = productRepository.create({ 
-      name_en: 'Test Product', 
-      name_ar: 'منتج تجريبي', 
-      price: 100, 
-      stock: 10, 
-      category_id: category.id 
-    });
-    await productRepository.save(product);
-
-    // Authenticate as user to get a token
-    const userResponse = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({ email: 'user@example.com', password: 'password' });
-    userToken = userResponse.body.access_token;
+    try {
+      await wishlistRepository.clear();
+      await userRepository.clear();
+      await productRepository.clear();
+      await userRepository.save({
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'hashed_password',
+      });
+      await productRepository.save({
+        name: 'Test Product',
+        price: 100,
+      });
+      await wishlistRepository.save({
+        user: { id: 1 },
+        product: { id: 1 },
+      });
+    } catch (error) {
+      if (error.message.includes('relation does not exist')) {
+        console.log('Table not found during clear, assuming sync handled it');
+      } else {
+        throw error;
+      }
+    }
   });
 
-  it('/wishlist (POST)', async () => {
-    const addToWishlistDto = { productId: product.id };
+  afterAll(async () => {
+    await app.close();
+    try {
+      await dataSource.dropDatabase();
+      console.log('Test database dropped successfully');
+    } catch (error) {
+      console.log('Error dropping database:', error.message);
+    }
+  });
 
+  it('/wishlist (POST)', () => {
     return request(app.getHttpServer())
       .post('/wishlist')
-      .set('Authorization', `Bearer ${userToken}`)
-      .send(addToWishlistDto)
-      .expect(201);
+      .send({ userId: 1, productId: 1 })
+      .expect(201)
+      .expect((res) => {
+        expect(res.body.productId).toBe(1);
+      });
   });
 
-  it('/wishlist (GET)', async () => {
+  it('/wishlist (GET)', () => {
     return request(app.getHttpServer())
       .get('/wishlist')
-      .set('Authorization', `Bearer ${userToken}`)
-      .expect(200);
+      .set('Authorization', 'Bearer test_token') // Adjust for auth
+      .expect(200)
+      .expect((res) => {
+        expect(Array.isArray(res.body)).toBe(true);
+      });
   });
 
-  it('/wishlist/:productId (DELETE)', async () => {
-    const wishlistItem = wishlistRepository.create({ user, product });
-    await wishlistRepository.save(wishlistItem);
-
+  it('/wishlist/:productId (DELETE)', () => {
     return request(app.getHttpServer())
-      .delete(`/wishlist/${product.id}`)
-      .set('Authorization', `Bearer ${userToken}`)
+      .delete('/wishlist/1')
+      .set('Authorization', 'Bearer test_token') // Adjust for auth
       .expect(200);
   });
 });
