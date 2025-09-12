@@ -1,11 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Order } from './order.entity';
+import { Wishlist } from './wishlist.entity';
+import { Cart } from './cart.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Index()
   @Column({ unique: true })
   email: string;
 
@@ -15,9 +17,15 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ type: 'jsonb', nullable: true })
-  shipping_info: object;
-
   @Column({ type: 'enum', enum: ['user', 'admin', 'superadmin'], default: 'user' })
   role: string;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user)
+  wishlist: Wishlist[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  cart: Cart[];
 }

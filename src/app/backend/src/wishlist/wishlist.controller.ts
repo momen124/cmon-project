@@ -1,28 +1,42 @@
-import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, UseGuards, Request, BadRequestException, Body } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { User } from '../entities/user.entity';
-import { AddToWishlistDto } from './dto/add-to-wishlist.dto';
+import { IsUUID } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
+class ProductIdDto {
+  @IsUUID('4', { message: 'Product ID must be a valid UUID' })
+  productId: string;
+}
 
 @Controller('wishlist')
-@UseGuards(JwtAuthGuard)
 export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  getWishlist(@Request() req: { user: User }) {
-    return this.wishlistService.getWishlist(req.user);
+  async findAll(@Request() req) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
+    return this.wishlistService.findAll(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  addToWishlist(@Request() req: { user: User }, @Body(new ValidationPipe()) addToWishlistDto: AddToWishlistDto) {
-    return this.wishlistService.addToWishlist(addToWishlistDto, req.user);
+  async add(@Request() req, @Body() body: ProductIdDto) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
+    return this.wishlistService.add(req.user.userId, body.productId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':productId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  removeFromWishlist(@Param('productId') productId: string, @Request() req: { user: User }) {
-    return this.wishlistService.removeFromWishlist(productId, req.user);
+  async remove(@Request() req, @Param('productId', ValidationPipe) productIdDto: ProductIdDto) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
+    return this.wishlistService.remove(req.user.userId, productIdDto.productId);
   }
 }

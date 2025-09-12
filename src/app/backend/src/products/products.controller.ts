@@ -1,45 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch, Delete, UseGuards, BadRequestException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { IsUUID } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
+class ProductIdDto {
+  @IsUUID('4', { message: 'ID must be a valid UUID' })
+  id: string;
+}
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query('lang') lang: string) {
-    return this.productsService.findAll(lang);
+  async findAll() {
+    return this.productsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query('lang') lang: string) {
-    return this.productsService.findOne(id, lang);
+  async findOne(@Param('id', ValidationPipe) productId: ProductIdDto) {
+    const product = await this.productsService.findOne(productId.id);
+    if (!product) {
+      throw new BadRequestException('Product not found');
+    }
+    return product;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'superadmin')
-  @HttpCode(HttpStatus.CREATED)
-  create(@Body(new ValidationPipe()) createProductDto: CreateProductDto) {
+  async create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'superadmin')
-  update(@Param('id') id: string, @Body(new ValidationPipe()) updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  async update(@Param('id', ValidationPipe) productId: ProductIdDto, @Body() updateProductDto: UpdateProductDto) {
+    return this.productsService.update(productId.id, updateProductDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'superadmin')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  async remove(@Param('id', ValidationPipe) productId: ProductIdDto) {
+    return this.productsService.remove(productId.id);
   }
 }

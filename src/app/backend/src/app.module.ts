@@ -3,15 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './entities/user.entity';
-import { Product } from './entities/product.entity';
-import { Order } from './entities/order.entity';
-import { OrderItem } from './entities/order-item.entity';
-import { Category } from './entities/category.entity';
-import { PasswordResetToken } from './entities/password-reset-token.entity';
-import { Wishlist } from './entities/wishlist.entity';
-import { Cart } from './entities/cart.entity';
-import { SeedService } from './seed/seed.service';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
@@ -21,6 +12,9 @@ import { EmailModule } from './email/email.module';
 import { OrdersModule } from './orders/orders.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { CategoriesModule } from './categories/categories.module';
+import { SeederModule } from './database/seeder.module';
+import { SeedCommand } from './database/seed.command';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -43,25 +37,31 @@ import { CategoriesModule } from './categories/categories.module';
         username: configService.get('DB_USERNAME', 'postgres'),
         password: configService.get('DB_PASSWORD', 'your_password'),
         database: configService.get('DB_DATABASE', 'cmon-project'),
-        entities: [
-          User, 
-          Product, 
-          Order, 
-          OrderItem, 
-          Category, 
-          PasswordResetToken, 
-          Wishlist,
-          Cart
-        ],
-        synchronize: false, // Keep false for production
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-        migrationsRun: false, // Run migrations manually
+        migrationsRun: false,
       }),
       inject: [ConfigService],
+      dataSourceFactory: async (options?: DataSourceOptions) => {
+        if (!options) {
+          throw new Error('TypeORM options are undefined');
+        }
+        const dataSource = new DataSource(options);
+        await dataSource.initialize();
+        if (options.synchronize) {
+          try {
+            await dataSource.synchronize(true);
+            console.log('Database synchronized successfully');
+          } catch (error) {
+            console.error('Synchronization error:', error);
+            throw error;
+          }
+        }
+        return dataSource;
+      },
     }),
-    // Add all entities to make them available for SeedService
-    TypeOrmModule.forFeature([User, Product, Order, OrderItem, Category, PasswordResetToken, Wishlist, Cart]),
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -69,11 +69,12 @@ import { CategoriesModule } from './categories/categories.module';
     OrdersModule,
     CategoriesModule,
     WishlistModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    SeedService,
+    SeedCommand,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

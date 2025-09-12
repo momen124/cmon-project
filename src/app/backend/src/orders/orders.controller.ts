@@ -1,44 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards, Request, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { User } from '../entities/user.entity';
+import { IsUUID } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
+class OrderIdDto {
+  @IsUUID('4', { message: 'Order ID must be a valid UUID' })
+  id: string;
+}
 
 @Controller('orders')
-@UseGuards(JwtAuthGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  create(@Request() req: { user: User }, @Body(new ValidationPipe()) createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto, req.user);
+  async create(@Request() req, @Body() createOrderDto: CreateOrderDto) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
+    return this.ordersService.create(req.user.userId, createOrderDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAllForUser(@Request() req: { user: { userId: string } }) {
+  async findAll(@Request() req) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
     return this.ordersService.findAllForUser(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('admin')
-  @UseGuards(RolesGuard)
-  @Roles('admin', 'superadmin')
-  findAllForAdmin() {
+  async findAllAdmin() {
     return this.ordersService.findAllForAdmin();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOneForUser(@Param('id') id: string, @Request() req: { user: { userId: string } }) {
-    return this.ordersService.findOneForUser(id, req.user.userId);
+  async findOne(@Request() req, @Param('id', ValidationPipe) orderId: OrderIdDto) {
+    if (!req.user.userId) {
+      throw new BadRequestException('User ID is missing');
+    }
+    return this.ordersService.findOneById(orderId.id, req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/status')
-  @UseGuards(RolesGuard)
-  @Roles('admin', 'superadmin')
-  updateStatus(@Param('id') id: string, @Body(new ValidationPipe()) updateOrderStatusDto: UpdateOrderStatusDto) {
-    return this.ordersService.updateStatus(id, updateOrderStatusDto);
+  async updateStatus(@Param('id', ValidationPipe) orderId: OrderIdDto, @Body() updateOrderStatusDto: UpdateOrderStatusDto) {
+    return this.ordersService.updateStatus(orderId.id, updateOrderStatusDto);
   }
 }

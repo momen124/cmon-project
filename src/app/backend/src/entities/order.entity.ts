@@ -15,13 +15,13 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, user => user.id)
+  @ManyToOne(() => User, (user) => user.orders, { onDelete: 'NO ACTION' })
   user: User;
 
-  @OneToMany(() => OrderItem, orderItem => orderItem.order, { cascade: true })
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   total_price: number;
 
   @Column({

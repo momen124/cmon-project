@@ -1,38 +1,75 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user);
-  }
-
-  async findOne(email: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    return user ?? undefined;
-  }
-
-  async findById(id: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findOne({ where: { id } });
-    return user ?? undefined;
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.usersRepository.update(id, updateUserDto);
-    const updatedUser = await this.findById(id);
-    if (!updatedUser) {
-      throw new Error(`User with id ${id} not found`);
+  async findOne(email: string): Promise<User | null> {
+    try {
+      return await this.userRepository.findOne({ where: { email } as FindOptionsWhere<User> });
+    } catch (error) {
+      console.error('Find user error:', error);
+      if (error.code === '42P01') {
+        throw new InternalServerErrorException('Database table "users" does not exist');
+      }
+      throw error;
     }
-    return updatedUser;
+  }
+
+  async findById(id: string): Promise<User | null> {
+    try {
+      const user = await this.userRepository.findOne({ where: { id } as FindOptionsWhere<User> });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      return user;
+    } catch (error) {
+      console.error('Find user by ID error:', error);
+      if (error.code === '42P01') {
+        throw new InternalServerErrorException('Database table "users" does not exist');
+      }
+      throw error;
+    }
+  }
+
+  async create(createUserDto: CreateUserDto & { role?: string }): Promise<User> {
+    try {
+      const user = this.userRepository.create(createUserDto);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.error('Create user error:', error);
+      if (error.code === '42P01') {
+        throw new InternalServerErrorException('Database table "users" does not exist');
+      }
+      throw error;
+    }
+  }
+
+  async update(id: string, updateUserDto: Partial<CreateUserDto>): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({ where: { id } as FindOptionsWhere<User> });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      await this.userRepository.update({ id } as FindOptionsWhere<User>, updateUserDto);
+      const updatedUser = await this.userRepository.findOne({ where: { id } as FindOptionsWhere<User> });
+      if (!updatedUser) {
+        throw new NotFoundException('User not found after update');
+      }
+      return updatedUser;
+    } catch (error) {
+      console.error('Update user error:', error);
+      if (error.code === '42P01') {
+        throw new InternalServerErrorException('Database table "users" does not exist');
+      }
+      throw error;
+    }
   }
 }
