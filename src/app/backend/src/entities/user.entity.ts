@@ -20,6 +20,9 @@ export class User {
   @Column({ type: 'enum', enum: ['user', 'admin', 'superadmin'], default: 'user' })
   role: string;
 
+  @Column({ type: 'jsonb', nullable: true })
+  shipping_info: object;
+
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 

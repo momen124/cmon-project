@@ -12,9 +12,8 @@ import { EmailModule } from './email/email.module';
 import { OrdersModule } from './orders/orders.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { CategoriesModule } from './categories/categories.module';
-import { SeederModule } from './database/seeder.module';
-import { SeedCommand } from './database/seed.command';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { SeedModule } from './database/seeder.module';
 
 @Module({
   imports: [
@@ -69,12 +68,11 @@ import { DataSource, DataSourceOptions } from 'typeorm';
     OrdersModule,
     CategoriesModule,
     WishlistModule,
-    SeederModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    SeedCommand,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

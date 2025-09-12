@@ -1,9 +1,9 @@
 import { Command, Console } from 'nestjs-console';
-import { SeederService } from './seeder';
+import { SeedService } from 'src/seed/seed.service';
 
 @Console()
 export class SeedCommand {
-  constructor(private readonly seederService: SeederService) {}
+  constructor(private readonly seedService: SeedService) {}
 
   @Command({
     command: 'seed',
@@ -11,7 +11,7 @@ export class SeedCommand {
   })
   async seed() {
     try {
-      await this.seederService.seed();
+      await this.seedService.seed();
       console.log('Seeding completed!');
     } catch (error) {
       console.error('Seeding failed:', error);
@@ -25,7 +25,7 @@ export class SeedCommand {
   })
   async clear() {
     try {
-      await this.seederService.clear();
+      await this.seedService.clear();
       console.log('Database cleared!');
     } catch (error) {
       console.error('Clearing failed:', error);
