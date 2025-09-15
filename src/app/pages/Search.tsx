@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
-import { products } from '@/data/mockData';
+import { Product } from '@/app/types';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/Product/ProductCard';
 
@@ -14,6 +14,16 @@ const Search: React.FC = () => {
   
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [sortBy, setSortBy] = useState('relevance');
+  const [products, setProducts] = useState<Product[]>([]);
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {

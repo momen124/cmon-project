@@ -6,10 +6,20 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import ProductCard from '../Product/ProductCard';
 import { useStore } from '@/store/useStore';
-import { products } from '@/data/mockData';
+import { Product } from '@/app/types';
 
 const FeaturedSections: React.FC = () => {
   const { language } = useStore();
+  const [products, setProducts] = React.useState<Product[]>([]);
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
   const isRTL = language === 'ar';
 
   // Temporary translations

@@ -3,10 +3,20 @@
 import React from 'react';
 import Link from 'next/link';
 import { useStore } from '@/store/useStore';
-import { categories } from '@/data/mockData';
+import { Category } from '@/app/types';
 
 const CategorySection: React.FC = () => {
   const { language } = useStore();
+  const [categories, setCategories] = React.useState<Category[]>([]);
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      setCategories(data);
+    };
+    fetchCategories();
+  }, []);
 
   const categoryConfig = {
     bedding: {

@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartIcon, ShoppingBagIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { products } from '@/data/mockData';
+import { Product } from '@/app/types';
 import { useStore } from '@/store/useStore';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
@@ -11,7 +11,17 @@ import Link from 'next/link';
 const Wishlist: React.FC = () => {
   const { t } = useTranslation();
   const { wishlist, removeFromWishlist, addToCart, language, currency } = useStore();
+  const [products, setProducts] = React.useState<Product[]>([]);
   const isRTL = language === 'ar';
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
 
   const wishlistProducts = products.filter(product => wishlist.includes(product.id));
 
