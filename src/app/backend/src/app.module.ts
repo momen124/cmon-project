@@ -12,6 +12,7 @@ import { EmailModule } from './email/email.module';
 import { OrdersModule } from './orders/orders.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { CategoriesModule } from './categories/categories.module';
+import { CartModule } from './cart/cart.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeedModule } from './database/seeder.module';
 
@@ -69,6 +70,7 @@ import { SeedModule } from './database/seeder.module';
     CategoriesModule,
     WishlistModule,
     SeedModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [
