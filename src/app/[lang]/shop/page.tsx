@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdjustmentsHorizontalIcon, Squares2X2Icon, ListBulletIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { products, categories } from '@/data/mockData';
+import { Product, Category } from '@/app/types';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/Product/ProductCard';
 import ProductListItem from '@/components/Product/ProductListItem';
@@ -16,6 +16,8 @@ const Shop: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useStore();
   
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
@@ -27,6 +29,22 @@ const Shop: React.FC = () => {
     inStock: false,
     onSale: false,
   });
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const [productsRes, categoriesRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/categories'),
+      ]);
+      const [productsData, categoriesData] = await Promise.all([
+        productsRes.json(),
+        categoriesRes.json(),
+      ]);
+      setProducts(productsData);
+      setCategories(categoriesData);
+    };
+    fetchData();
+  }, []);
 
   const isRTL = language === 'ar';
 

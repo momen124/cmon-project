@@ -13,7 +13,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 import { useStore } from '@/store/useStore';
-import { categories } from '@/data/mockData';
+import { Category } from '@/app/types';
 import MegaMenu from '@/components/common/MegaMenu';
 import ThemeToggle from './ThemeToggle';
 
@@ -31,8 +31,18 @@ const Header: React.FC = () => {
   const { cart, setCartOpen, language, setLanguage, currency, setCurrency } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      setCategories(data);
+    };
+    fetchCategories();
+  }, []);
 
   const isRTL = language === 'ar';
   const cartItemsCount = cart ? cart.reduce((sum, item) => sum + item.quantity, 0) : 0;

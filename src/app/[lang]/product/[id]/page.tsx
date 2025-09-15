@@ -6,19 +6,34 @@ import { StarIcon, HeartIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon } from
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { products } from '@/data/mockData';
+import { Product } from '@/app/types';
 import { useStore } from '@/store/useStore';
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id:string }>();
   const { t } = useTranslation();
   const { language, currency, addToCart, wishlist, addToWishlist, removeFromWishlist } = useStore();
+  const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<{ name: string; cm: string } | null>(null);
   const [selectedColor, setSelectedColor] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const product = products.find((p) => p.id === id);
+  React.useEffect(() => {
+    if (id) {
+      const fetchProduct = async () => {
+        const res = await fetch(`/api/products/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProduct(data);
+        } else {
+          setProduct(null);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id]);
+
   const isRTL = language === 'ar';
   const isInWishlist = product ? wishlist.includes(product.id) : false;
 
