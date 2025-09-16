@@ -11,8 +11,8 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 const Shop: React.FC = () => {
-  const { slug } = useParams();
   const searchParams = useSearchParams();
+  const categoryId = searchParams.get('category');
   const { t } = useTranslation();
   const { language } = useStore();
   
@@ -48,7 +48,7 @@ const Shop: React.FC = () => {
 
   const isRTL = language === 'ar';
 
-  const currentCategory = categories.find(cat => cat.id === slug);
+  const currentCategory = categories.find(cat => cat.id === categoryId);
   
   const filteredProducts = useMemo(() => {
     let filtered = products;

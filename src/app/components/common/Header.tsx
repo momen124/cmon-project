@@ -11,11 +11,13 @@ import {
   XMarkIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
+  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
-import { useStore } from '@/store/useStore';
+import { useStore } from '@/app/store/useStore';
 import { Category } from '@/app/types';
 import MegaMenu from '@/components/common/MegaMenu';
 import ThemeToggle from './ThemeToggle';
+import { toast } from 'react-hot-toast';
 
 type CurrencyCode = 'EGP' | 'USD' | 'EUR';
 
@@ -28,7 +30,7 @@ const MemoizedMegaMenu = React.memo(MegaMenu);
 
 const Header: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const { cart, setCartOpen, language, setLanguage, currency, setCurrency } = useStore();
+  const { cart, setCartOpen, language, setLanguage, currency, setCurrency, user, accessToken, setUser, setAccessToken } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -37,9 +39,13 @@ const Header: React.FC = () => {
 
   React.useEffect(() => {
     const fetchCategories = async () => {
-      const response = await fetch('/api/categories');
-      const data = await response.json();
-      setCategories(data);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
     };
     fetchCategories();
   }, []);
@@ -65,9 +71,14 @@ const Header: React.FC = () => {
   };
 
   const handleCartClick = useCallback(() => {
-    console.log('Cart button clicked', { cartItemsCount, cartOpen: false }); // Debug log
     setCartOpen(true);
   }, [setCartOpen]);
+
+  const handleLogout = () => {
+    setUser(null);
+    setAccessToken(null);
+    toast.success('Logged out successfully!');
+  };
 
   const currencies: Currency[] = [
     { code: 'EGP', symbol: 'ج.م' },
@@ -138,26 +149,35 @@ const Header: React.FC = () => {
 
             {/* Actions */}
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
-              <Link 
-                href={`/${language}/account`} 
-                className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors" 
-                aria-label={t('account') || 'Account'}
-              >
-                <UserIcon className="w-6 h-6 text-gray-600 dark:text-[var(--secondary-text-color)" />
-              </Link>
+              {accessToken ? (
+                <>
+                  <span className="hidden sm:inline text-sm font-medium">{user?.name}</span>
+                  <button onClick={handleLogout} className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors" aria-label={t('logout') || 'Logout'}>
+                    <ArrowRightOnRectangleIcon className="w-6 h-6 text-gray-600 dark:text-[var(--secondary-text-color)]" />
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href={`/${language}/login`}
+                  className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors"
+                  aria-label={t('account') || 'Account'}
+                >
+                  <UserIcon className="w-6 h-6 text-gray-600 dark:text-[var(--secondary-text-color)]" />
+                </Link>
+              )}
               <Link 
                 href={`/${language}/wishlist`} 
                 className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors" 
                 aria-label={t('wishlist') || 'Wishlist'}
               >
-                <HeartIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
+                <HeartIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)]" />
               </Link>
               <button
                 onClick={handleCartClick}
                 className="p-2 hover-lift hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors relative"
                 aria-label={t('openCart', { count: cartItemsCount }) || `Open cart with ${cartItemsCount} items`}
               >
-                <ShoppingBagIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
+                <ShoppingBagIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)]" />
                 {cartItemsCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                     {cartItemsCount}
@@ -170,8 +190,8 @@ const Header: React.FC = () => {
                 aria-label={mobileMenuOpen ? (t('closeMenu') || 'Close menu') : (t('openMenu') || 'Open menu')}
               >
                 {mobileMenuOpen ? 
-                  <XMarkIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" /> : 
-                  <Bars3Icon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)" />
+                  <XMarkIcon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)]" /> :
+                  <Bars3Icon className="w-6 h-6 text-[var(--text-color)] dark:text-[var(--secondary-text-color)]" />
                 }
               </button>
             </div>
@@ -190,13 +210,11 @@ const Header: React.FC = () => {
                   onMouseLeave={() => setActiveCategoryId(null)}
                 >
                   <Link
-                    href={`/${language}/shop?category=${category.slug}`}
+                    href={`/${language}/shop?category=${category.id}`}
                     className={`flex items-center py-4 px-2 text-[var(--text-color)] dark:text-gray-100 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
                   >
-                    <span>{isRTL ? category.nameAr : category.name}</span>
-                    {category.children && <ChevronDownIcon className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />}
+                    <span>{isRTL ? category.name_ar : category.name_en}</span>
                   </Link>
-                  {activeCategoryId === category.id && category.children && <MemoizedMegaMenu category={category} />}
                 </div>
               ))}
             </div>
@@ -220,7 +238,7 @@ const Header: React.FC = () => {
                   onChange={handleSearchChange}
                   className={`w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-[var(--text-color)] dark:text-gray-100 font-${isRTL ? 'arabic' : 'english'} ${isRTL ? 'pe-10' : 'ps-10'}`}
                 />
-                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-[var(--secondary-text-color) dark:text-[var(--secondary-text-color) ${isRTL ? 'right-3' : 'left-3'}`} />
+                <MagnifyingGlassIcon className={`absolute top-3 w-5 h-5 text-[var(--secondary-text-color)] dark:text-[var(--secondary-text-color)] ${isRTL ? 'right-3' : 'left-3'}`} />
               </div>
             </div>
 
@@ -228,33 +246,15 @@ const Header: React.FC = () => {
             <div className="py-2">
               {categories.map((category) => (
                 <div key={category.id}>
-                  <button
-                    onClick={() => toggleCategory(category.id)}
+                  <Link
+                    href={`/${language}/shop?category=${category.id}`}
                     className="w-full flex justify-between px-4 py-3 text-[var(--text-color)] dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-medium hover-lift"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className={`font-${isRTL ? 'arabic' : 'english'}`}>
-                      {isRTL ? category.nameAr : category.name}
+                      {isRTL ? category.name_ar : category.name_en}
                     </span>
-                    {category.children && (
-                      <ChevronDownIcon
-                        className={`w-4 h-4 transition-transform ${expandedCategories.includes(category.id) ? 'rotate-180' : ''} ${isRTL ? 'rotate-180' : ''}`}
-                      />
-                    )}
-                  </button>
-                  {category.children && expandedCategories.includes(category.id) && (
-                    <div className="ps-6">
-                      {category.children.map((subCategory) => (
-                        <Link
-                          key={subCategory.id}
-                          href={`/${language}/shop?category=${subCategory.slug}`}
-                          className="block px-4 py-2 text-[var(--text-color)] dark:text-[var(--secondary-text-color) hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-medium font-english"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {isRTL ? subCategory.nameAr : subCategory.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  </Link>
                 </div>
               ))}
             </div>

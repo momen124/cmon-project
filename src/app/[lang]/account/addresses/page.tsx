@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PlusIcon, PencilIcon, TrashIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
@@ -10,14 +10,14 @@ import AccountSidebar from '../AccountSidebar';
 
 const AddressesPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useStore();
+  const { user, accessToken } = useStore();
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Address>({
-    id: '',
+  const [formData, setFormData] = useState<Omit<Address, 'id'>>({
     type: 'home',
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    firstName: user?.name?.split(' ')[0] || '',
+    lastName: user?.name?.split(' ')[1] || '',
     street: '',
     city: '',
     governorate: '',
@@ -26,39 +26,31 @@ const AddressesPage: React.FC = () => {
     isDefault: false,
   });
 
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: '1',
-      type: 'home',
-      firstName: 'Ahmed',
-      lastName: 'Hassan',
-      street: '123 Nile Street, Zamalek',
-      city: 'Cairo',
-      governorate: 'Cairo',
-      postalCode: '11211',
-      phone: '+20 100 123 4567',
-      isDefault: true,
-    },
-    {
-      id: '2',
-      type: 'work',
-      firstName: 'Ahmed',
-      lastName: 'Hassan',
-      street: '456 Tahrir Square',
-      city: 'Cairo',
-      governorate: 'Cairo',
-      postalCode: '11511',
-      phone: '+20 100 123 4567',
-      isDefault: false,
-    },
-  ]);
+  const fetchAddresses = async () => {
+    if (accessToken) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setAddresses(data);
+        }
+      } catch (error) {
+        toast.error(t('Failed to fetch addresses'));
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, [accessToken]);
 
   const resetForm = () => {
     setFormData({
-      id: '',
       type: 'home',
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
+      firstName: user?.name?.split(' ')[0] || '',
+      lastName: user?.name?.split(' ')[1] || '',
       street: '',
       city: '',
       governorate: '',
@@ -70,51 +62,85 @@ const AddressesPage: React.FC = () => {
     setEditingId(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newAddress: Address = {
-      ...formData,
-      id: editingId || Date.now().toString(),
-    };
-    if (editingId) {
-      setAddresses(prev => prev.map(addr =>
-        addr.id === editingId
-          ? newAddress
-          : formData.isDefault
-            ? { ...addr, isDefault: false }
-            : addr
-      ));
-      toast.success(t('Address updated successfully'));
-    } else {
-      setAddresses(prev =>
-        formData.isDefault
-          ? [...prev.map(addr => ({ ...addr, isDefault: false })), newAddress]
-          : [...prev, newAddress]
-      );
-      toast.success(t('Address added successfully'));
+    const url = editingId
+      ? `${process.env.NEXT_PUBLIC_API_URL}/addresses/${editingId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/addresses`;
+    const method = editingId ? 'PATCH' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast.success(t(editingId ? 'Address updated successfully' : 'Address added successfully'));
+        resetForm();
+        fetchAddresses();
+      } else {
+        toast.error(t('Failed to save address'));
+      }
+    } catch (error) {
+      toast.error(t('Failed to save address'));
     }
-    resetForm();
   };
 
   const handleEdit = (address: Address) => {
-    setFormData(address);
+    setFormData({
+      type: address.type,
+      firstName: address.firstName,
+      lastName: address.lastName,
+      street: address.street,
+      city: address.city,
+      governorate: address.governorate,
+      postalCode: address.postalCode,
+      phone: address.phone,
+      isDefault: address.isDefault,
+    });
     setEditingId(address.id);
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(t('Are you sure you want to delete this address?'))) {
-      setAddresses(prev => prev.filter(addr => addr.id !== id));
-      toast.success(t('Address deleted successfully'));
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (response.ok) {
+          toast.success(t('Address deleted successfully'));
+          fetchAddresses();
+        } else {
+          toast.error(t('Failed to delete address'));
+        }
+      } catch (error) {
+        toast.error(t('Failed to delete address'));
+      }
     }
   };
 
-  const handleSetDefault = (id: string) => {
-    setAddresses(prev => prev.map(addr => ({
-      ...addr,
-      isDefault: addr.id === id,
-    })));
-    toast.success(t('Default address updated'));
+  const handleSetDefault = async (id: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses/${id}/default`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (response.ok) {
+        toast.success(t('Default address updated'));
+        fetchAddresses();
+      } else {
+        toast.error(t('Failed to set default address'));
+      }
+    } catch (error) {
+      toast.error(t('Failed to set default address'));
+    }
   };
 
   const getTypeIcon = (type: string) => {

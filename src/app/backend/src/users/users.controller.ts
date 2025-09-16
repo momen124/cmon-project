@@ -3,6 +3,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../entities/user.entity';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users')
 export class UsersController {
@@ -28,5 +29,14 @@ export class UsersController {
     const user = await this.usersService.update(req.user.userId, updateUserDto);
     const { password, ...result } = user;
     return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  async changePassword(
+    @Request() req: { user: { userId: string } },
+    @Body(new ValidationPipe()) changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    return this.usersService.changePassword(req.user.userId, changePasswordDto);
   }
 }

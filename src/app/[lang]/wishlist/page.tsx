@@ -4,26 +4,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartIcon, ShoppingBagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Product } from '@/app/types';
-import { useStore } from '@/store/useStore';
+import { useStore } from '@/app/store/useStore';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
 const Wishlist: React.FC = () => {
   const { t } = useTranslation();
   const { wishlist, removeFromWishlist, addToCart, language, currency } = useStore();
-  const [products, setProducts] = React.useState<Product[]>([]);
   const isRTL = language === 'ar';
-
-  React.useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await fetch('/api/products');
-      const data = await res.json();
-      setProducts(data);
-    };
-    fetchProducts();
-  }, []);
-
-  const wishlistProducts = products.filter(product => wishlist.includes(product.id));
 
   const formatPrice = (price: number) => {
     const symbol = currency === 'EGP' ? 'ج.م' : currency === 'USD' ? '$' : '€';
@@ -36,13 +24,15 @@ const Wishlist: React.FC = () => {
     toast.success(t('removedFromWishlist'));
   };
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product) => {
     if (product.stock <= 0) {
       toast.error(t('outOfStock'));
       return;
     }
+    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
+    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
     try {
-      addToCart(product, product.sizes[0], product.colors[0], 1);
+      addToCart(product, size, color, 1);
       toast.success(t('addedToCart'));
     } catch (error) {
       toast.error(t('cartError') || 'Failed to add to cart');
@@ -54,11 +44,11 @@ const Wishlist: React.FC = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--text-color)] dark:text-secondary-500 mb-2 font-english">{t('wishlist')}</h1>
         <p className="text-base-600 dark:text-base-300 font-english">
-          {wishlistProducts.length} {wishlistProducts.length === 1 ? t('item') : t('items')} {t('savedForLater')}
+          {wishlist.length} {wishlist.length === 1 ? t('item') : t('items')} {t('savedForLater')}
         </p>
       </div>
 
-      {wishlistProducts.length === 0 ? (
+      {wishlist.length === 0 ? (
         <div className="text-center py-16">
           <HeartIcon className="w-24 h-24 mx-auto text-base-600 dark:text-base-300" />
           <h2 className="text-2xl font-semibold text-[var(--text-color)] dark:text-secondary-500 mb-4 font-english">{t('emptyWishlist')}</h2>
@@ -72,13 +62,13 @@ const Wishlist: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wishlistProducts.map(product => (
+          {wishlist.map(product => (
             <div key={product.id} className="bg-secondary-50 dark:bg-secondary-900 rounded-lg shadow-sm border border-base-200 dark:border-muted-700 hover:shadow-md transition-shadow duration-300">
               <div className="relative overflow-hidden rounded-t-lg">
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/${language}/product/${product.id}`}>
                   <img
                     src={product.images[0] || "/placeholder.svg"}
-                    alt={isRTL ? product.nameAr : product.name}
+                    alt={isRTL ? product.name_ar : product.name_en}
                     className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </Link>
@@ -90,31 +80,12 @@ const Wishlist: React.FC = () => {
                 >
                   <TrashIcon className="w-5 h-5 text-red-500 dark:text-red-300" />
                 </button>
-
-                <div className={`absolute top-3 flex flex-col gap-2 ${isRTL ? 'right-3' : 'left-3'}`}>
-                  {product.newArrival && (
-                    <span className="bg-neutral-500 dark:bg-neutral-400 text-white dark:text-[var(--text-color)] text-xs px-2 py-1 rounded-full font-english">
-                      {t('new')}
-                    </span>
-                  )}
-                  {product.originalPrice && (
-                    <span className="bg-highlight-500 dark:bg-highlight-400 text-[var(--text-color)] dark:text-secondary-500 text-xs px-2 py-1 rounded-full font-english">
-                      {t('sale')}
-                    </span>
-                  )}
-                </div>
               </div>
 
               <div className="p-4">
-                <div className="mb-2">
-                  <span className="text-sm text-base-600 dark:text-base-300 font-english">
-                    {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
-                  </span>
-                </div>
-
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/${language}/product/${product.id}`}>
                   <h3 className="font-semibold text-[var(--text-color)] dark:text-secondary-500 mb-2 hover:text-primary-600 dark:hover:text-primary-300 transition-colors line-clamp-2 font-english">
-                    {isRTL ? product.nameAr : product.name}
+                    {isRTL ? product.name_ar : product.name_en}
                   </h3>
                 </Link>
 
@@ -123,31 +94,10 @@ const Wishlist: React.FC = () => {
                     <span className="text-lg font-bold text-[var(--text-color)] dark:text-secondary-500 font-english">
                       {formatPrice(product.price)}
                     </span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-base-500 dark:text-base-300 line-through font-english">
-                        {formatPrice(product.originalPrice)}
-                      </span>
-                    )}
                   </div>
                   <span className={`text-sm font-medium font-english ${product.stock > 0 ? 'text-green-600' : 'text-red-600 dark:text-red-400'}`}>
                     {product.stock > 0 ? t('inStock') : t('outOfStock')}
                   </span>
-                </div>
-
-                <div className={`flex space-x-2 mb-4 ${isRTL ? 'space-x-reverse' : ''}`}>
-                  {product.colors.slice(0, 4).map((color, index) => (
-                    <div
-                      key={index}
-                      className="w-6 h-6 rounded-full border-2 border-base-200 dark:border-muted-700"
-                      style={{ backgroundColor: color.hex }}
-                      title={isRTL ? color.nameAr : color.name}
-                    />
-                  ))}
-                  {product.colors.length > 4 && (
-                    <div className="w-6 h-6 rounded-full border-2 border-base-200 dark:border-muted-700 bg-secondary-50 dark:bg-secondary-900 flex items-center justify-center">
-                      <span className="text-xs text-base-600 dark:text-base-300 font-english">+{product.colors.length - 4}</span>
-                    </div>
-                  )}
                 </div>
 
                 <button
@@ -161,36 +111,6 @@ const Wishlist: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {wishlistProducts.length > 0 && (
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-[var(--text-color)] dark:text-secondary-500 mb-6 font-english">{t('youMightAlsoLike')}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products
-              .filter(product => !wishlist.includes(product.id))
-              .slice(0, 4)
-              .map(product => (
-                <div key={product.id} className="bg-secondary-50 dark:bg-secondary-900 rounded-lg shadow-sm border border-base-200 dark:border-muted-700">
-                  <Link href={`/product/${product.id}`}>
-                    <img
-                      src={product.images[0] || "/placeholder.svg"}
-                      alt={isRTL ? product.nameAr : product.name}
-                      className="w-full h-48 object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </Link>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-[var(--text-color)] dark:text-secondary-500 mb-2 line-clamp-2 font-english">
-                      {isRTL ? product.nameAr : product.name}
-                    </h3>
-                    <p className="text-lg font-bold text-[var(--text-color)] dark:text-secondary-500 font-english">
-                      {formatPrice(product.price)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-          </div>
         </div>
       )}
     </div>

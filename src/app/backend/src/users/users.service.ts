@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -71,5 +73,20 @@ export class UsersService {
       }
       throw error;
     }
+  }
+
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } as FindOptionsWhere<User> });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isPasswordMatching = await bcrypt.compare(changePasswordDto.currentPassword, user.password);
+    if (!isPasswordMatching) {
+      throw new UnauthorizedException('Wrong current password');
+    }
+
+    const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    await this.userRepository.update({ id: userId } as FindOptionsWhere<User>, { password: hashedPassword });
   }
 }

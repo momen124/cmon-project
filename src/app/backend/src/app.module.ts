@@ -15,6 +15,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { CartModule } from './cart/cart.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeedModule } from './database/seeder.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { SeedModule } from './database/seeder.module';
     WishlistModule,
     SeedModule,
     CartModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [

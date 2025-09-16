@@ -23,9 +23,10 @@ interface StoreState {
   setAccessToken: (token: string | null) => void;
 
   // Wishlist
-  wishlist: string[];
+  wishlist: Product[];
   addToWishlist: (productId: string) => void;
   removeFromWishlist: (productId: string) => void;
+  syncWishlist: () => void;
 
   // Language
   language: 'en' | 'ar';
@@ -171,16 +172,77 @@ export const useStore = create<StoreState>()(
 
       // Wishlist
       wishlist: [],
-      addToWishlist: (productId) => {
-        set((state) => ({
-          wishlist: [...state.wishlist, productId],
-        }));
+      addToWishlist: async (productId) => {
+        const { accessToken } = get();
+        if (!accessToken) {
+          toast.error('You must be logged in to add items to the wishlist.');
+          return;
+        }
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ productId }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to add item to wishlist');
+          }
+          get().syncWishlist();
+        } catch (error) {
+          toast.error(error.message);
+        }
       },
-      removeFromWishlist: (productId) => {
-        set((state) => ({
-          wishlist: state.wishlist.filter((id) => id !== productId),
-        }));
+      removeFromWishlist: async (productId) => {
+        const { accessToken } = get();
+        if (!accessToken) return;
+
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/${productId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to remove item from wishlist');
+          }
+          get().syncWishlist();
+        } catch (error) {
+          toast.error(error.message);
+        }
       },
+      syncWishlist: async () => {
+        const { accessToken } = get();
+        if (!accessToken) {
+          set({ wishlist: [] });
+          return;
+        }
+
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch wishlist');
+          }
+
+          const backendWishlist = await response.json();
+          const frontendWishlist: Product[] = backendWishlist.map((item: any) => item.product);
+          set({ wishlist: frontendWishlist });
+        } catch (error) {
+          console.error(error.message);
+          set({ wishlist: [] });
+        }
+      },
+
 
       // Language
       language: 'en',
