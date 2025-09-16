@@ -5,20 +5,24 @@ import { Order } from '../entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { User } from '../entities/user.entity';
+import { CartService } from '../cart/cart.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
+    private readonly cartService: CartService,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto): Promise<Order> {
     const order = this.orderRepository.create({
       ...createOrderDto,
-      user: { id: userId } as User, // Set user relation with ID
+      user: { id: userId } as User,
     });
-    return this.orderRepository.save(order);
+    const savedOrder = await this.orderRepository.save(order);
+    await this.cartService.clearCart(userId);
+    return savedOrder;
   }
 
   async findAllForUser(userId: string): Promise<Order[]> {

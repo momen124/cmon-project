@@ -62,4 +62,8 @@ export class CartService {
     cartItem.quantity = quantity;
     return this.cartRepository.save(cartItem);
   }
+
+  async clearCart(userId: string): Promise<void> {
+    await this.cartRepository.delete({ userId });
+  }
 }

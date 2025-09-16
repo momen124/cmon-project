@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 const Checkout: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { cart, clearCart, language, currency, setCartOpen } = useStore();
+  const { cart, clearCart, language, currency, setCartOpen, accessToken } = useStore();
 
   const [step, setStep] = useState(1);
   const [shippingInfo, setShippingInfo] = useState({
@@ -66,10 +66,38 @@ const Checkout: React.FC = () => {
   };
 
   const handleOrderSubmit = async () => {
+    if (!accessToken) {
+      toast.error(t('loginToCheckout'));
+      router.push(`/${language}/login`);
+      return;
+    }
+
+    const orderData = {
+      total_price: total,
+      shipping_info: shippingInfo,
+      orderItems: cart.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        price: item.product.price,
+      })),
+    };
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to place order');
+      }
+
       clearCart();
-      setCartOpen(false); // Close cart sidebar on successful order
+      setCartOpen(false);
       toast.success(t('orderPlaced'));
       router.push(`/${language}/account/orders`);
     } catch (error) {

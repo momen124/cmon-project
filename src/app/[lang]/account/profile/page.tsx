@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PencilIcon, StarIcon } from '@heroicons/react/24/outline';
 import { useStore } from '@/store/useStore';
@@ -9,40 +9,68 @@ import { User } from '@/types';
 
 const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
-  const { user, setUser } = useStore();
+  const { user, setUser, accessToken } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (accessToken) {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+            setFormData({
+              name: userData.name,
+              email: userData.email,
+              phone: userData.phone || '',
+            });
+          }
+        } catch (error) {
+          console.error('Failed to fetch user', error);
+        }
+      }
+    };
+    fetchUser();
+  }, [accessToken, setUser]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (user) {
-      setUser({ ...user, ...formData });
-      toast.success(t('Profile updated successfully'));
-      setIsEditing(false);
+    if (user && accessToken) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUser(updatedUser);
+          toast.success(t('Profile updated successfully'));
+          setIsEditing(false);
+        } else {
+          toast.error(t('Failed to update profile'));
+        }
+      } catch (error) {
+        toast.error(t('Failed to update profile'));
+      }
     }
   };
 
-  const mockUser: User = {
-    id: 'mock-1',
-    firstName: 'Ahmed',
-    lastName: 'Hassan',
-    email: 'ahmed.hassan@example.com',
-    phone: '+20 100 123 4567',
-    loyaltyPoints: 850,
-    totalOrders: 12,
-    totalSpent: 15420,
-    memberSince: 'January 2023',
-    addresses: [],
-    orders: [],
-    wishlist: [],
-  };
-
-  const currentUser = user || mockUser;
+  const currentUser = user;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-[var(--card-bg-color)]">
@@ -52,7 +80,8 @@ const ProfilePage: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
        
-        <div className="lg:col-span-3">
+      <div className="lg:col-span-3">
+        {currentUser ? (
           <div className="space-y-6">
             <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6">
               <div className="flex items-center justify-between mb-6">
@@ -71,37 +100,26 @@ const ProfilePage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
-                        {t('First Name')}
+                        {t('Full Name')}
                       </label>
                       <input
                         type="text"
-                        value={formData.firstName}
-                        onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                        value={formData.name}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                         className="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 bg-[var(--card-bg-color)] text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
-                        {t('Last Name')}
+                        {t('Email')}
                       </label>
                       <input
-                        type="text"
-                        value={formData.lastName}
-                        onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                         className="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 bg-[var(--card-bg-color)] text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                       />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
-                      {t('Email')}
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 bg-[var(--card-bg-color)] text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
-                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
@@ -110,7 +128,7 @@ const ProfilePage: React.FC = () => {
                     <input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
                       className="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 bg-[var(--card-bg-color)] text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                     />
                   </div>
@@ -135,9 +153,7 @@ const ProfilePage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-[var(--secondary-text-color)]">{t('Full Name')}</p>
-                      <p className="font-medium text-[var(--text-color)]">
-                        {currentUser.firstName} {currentUser.lastName}
-                      </p>
+                      <p className="font-medium text-[var(--text-color)]">{currentUser.name}</p>
                     </div>
                     <div>
                       <p className="text-sm text-[var(--secondary-text-color)]">{t('Email')}</p>
@@ -151,87 +167,12 @@ const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6 text-center">
-                <div className="text-2xl font-bold text-[var(--primary-color)] mb-2">
-                  {currentUser.loyaltyPoints}
-                </div>
-                <div className="text-sm text-[var(--secondary-text-color)]">{t('Loyalty Points')}</div>
-              </div>
-              <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6 text-center">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-300 mb-2">
-                  {currentUser.totalOrders}
-                </div>
-                <div className="text-sm text-[var(--secondary-text-color)]">{t('Total Orders')}</div>
-              </div>
-              <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6 text-center">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-300 mb-2">
-                  {currentUser.totalSpent.toLocaleString()} EGP
-                </div>
-                <div className="text-sm text-[var(--secondary-text-color)]">{t('Total Spent')}</div>
-              </div>
-              <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6 text-center">
-                <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-300 mb-2">
-                  {t('Gold')}
-                </div>
-                <div className="text-sm text-[var(--secondary-text-color)]">{t('Member Status')}</div>
-              </div>
-            </div>
-
-            <div className="bg-[var(--primary-color)] rounded-lg p-6 text-[var(--cream-white-500)]">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">{t('Loyalty Program')}</h3>
-                <div className="flex items-center space-x-1">
-                  <StarIcon className="w-5 h-5 text-yellow-400 dark:text-yellow-200" />
-                  <span className="font-medium">{t('Gold Member')}</span>
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="flex justify-between text-sm mb-2">
-                  <span>{t('Progress to Platinum')}</span>
-                  <span>{currentUser.loyaltyPoints}/1000 {t('points')}</span>
-                </div>
-                <div className="w-full bg-[var(--primary-800)] rounded-full h-2">
-                  <div
-                    className="bg-yellow-400 dark:bg-yellow-200 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(currentUser.loyaltyPoints / 1000) * 100}%` }}
-                  />
-                </div>
-              </div>
-              <p className="text-sm text-[var(--cream-white-500)]/80">
-                {t('Earn 1 point for every 10 EGP spent. Unlock exclusive benefits and early access to sales.')}
-              </p>
-            </div>
-
-            <div className="bg-[var(--card-bg-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-6">
-              <h3 className="text-xl font-semibold text-[var(--text-color)] mb-4">{t('Recent Activity')}</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-[var(--border-color)]">
-                  <div>
-                    <p className="font-medium text-[var(--text-color)]">{t('Order #12345 delivered')}</p>
-                    <p className="text-sm text-[var(--secondary-text-color)]">{t('Egyptian Cotton Luxury Sheet Set')}</p>
-                  </div>
-                  <div className="text-sm text-[var(--secondary-text-color)]">{t('2 days ago')}</div>
-                </div>
-                <div className="flex items-center justify-between py-3 border-b border-[var(--border-color)]">
-                  <div>
-                    <p className="font-medium text-[var(--text-color)]">{t('Earned 25 loyalty points')}</p>
-                    <p className="text-sm text-[var(--secondary-text-color)]">{t('From order #12344')}</p>
-                  </div>
-                  <div className="text-sm text-[var(--secondary-text-color)]">{t('1 week ago')}</div>
-                </div>
-                <div className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="font-medium text-[var(--text-color)]">{t('Welcome bonus applied')}</p>
-                    <p className="text-sm text-[var(--secondary-text-color)]">{t('100 loyalty points added')}</p>
-                  </div>
-                  <div className="text-sm text-[var(--secondary-text-color)]">{t('2 weeks ago')}</div>
-                </div>
-              </div>
-            </div>
+            {/* Other sections like loyalty, etc. can be added here */}
           </div>
-        </div>
+        ) : (
+          <p>Please log in to view your profile.</p>
+        )}
+      </div>
       </div>
     </div>
   );

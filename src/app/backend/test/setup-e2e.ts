@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config({ path: '.env.test' });
+
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from '../src/app.module';
@@ -16,18 +19,6 @@ export function createTestModule(): any {
     module: TestModule,
     imports: [
       AppModule,
-      TypeOrmModule.forRoot({
-        type: 'postgres',
-        host: 'localhost',
-        port: 5433,
-        username: 'postgres',
-        password: 'your_password', // Replace with actual password or use process.env.DB_TEST_PASSWORD
-        database: 'cmon-project-test',
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'], // Broader path to catch all entities
-        synchronize: false, // Disable auto-sync to control manually
-        dropSchema: true, // Drop schema before manual sync
-        logging: true, // Enable for debugging SQL (disable in CI)
-      }),
     ],
   };
 }

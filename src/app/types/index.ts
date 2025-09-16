@@ -26,6 +26,16 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  loyaltyPoints?: number;
+  totalOrders?: number;
+  totalSpent?: number;
+  memberSince?: string;
+  orders?: Order[];
+  wishlist?: Product[];
+  addresses?: Address[];
 }
 
 export interface Address {
@@ -41,20 +51,22 @@ export interface Address {
   isDefault: boolean;
 }
 
+export interface OrderItem {
+  id: string;
+  product: Product;
+  quantity: number;
+  price: number;
+}
+
 export interface Order {
   id: string;
-  userId: string;
-  items: CartItem[];
-  total: number;
-  subtotal: number;
-  tax: number;
-  shipping: number;
-  discount: number;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: string;
-  shippingAddress: Address;
-  createdAt: Date;
-  updatedAt: Date;
+  user: User;
+  orderItems: OrderItem[];
+  total_price: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  shipping_info: any;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Category {

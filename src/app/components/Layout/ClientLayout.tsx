@@ -11,7 +11,7 @@ import { useStore } from '@/app/store/useStore';
 export default function ClientLayout({ children }: { children: ReactNode }) {
   const params = useParams();
   const lang = params?.lang as string;
-  const { syncCart, user } = useStore();
+  const { syncCart, user, syncWishlist } = useStore();
 
   useEffect(() => {
     // Set the language and direction attributes on the document
@@ -23,7 +23,8 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     syncCart();
-  }, [user, syncCart]);
+    syncWishlist();
+  }, [user, syncCart, syncWishlist]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background-color)] text-[var(--text-color)]">
