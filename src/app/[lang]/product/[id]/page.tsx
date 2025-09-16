@@ -7,26 +7,37 @@ import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { Product } from '@/app/types';
-import { useStore } from '@/store/useStore';
+import { useStore } from '@/app/store/useStore';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id:string }>();
   const { t } = useTranslation();
   const { language, currency, addToCart, wishlist, addToWishlist, removeFromWishlist } = useStore();
   const [product, setProduct] = useState<Product | null>(null);
-  const [selectedSize, setSelectedSize] = useState<{ name: string; cm: string } | null>(null);
-  const [selectedColor, setSelectedColor] = useState<any>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   React.useEffect(() => {
     if (id) {
       const fetchProduct = async () => {
-        const res = await fetch(`/api/products/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setProduct(data);
-        } else {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            setProduct(data);
+            if (data.sizes) {
+              setSelectedSize(Object.keys(data.sizes)[0]);
+            }
+            if (data.colors) {
+              setSelectedColor(Object.keys(data.colors)[0]);
+            }
+          } else {
+            setProduct(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch product:", error);
           setProduct(null);
         }
       };
@@ -64,7 +75,7 @@ const ProductDetail: React.FC = () => {
       toast.error(t('selectColor') || 'Please select a color');
       return;
     }
-    addToCart(product, selectedSize.name, selectedColor, quantity);
+    addToCart(product, selectedSize, selectedColor, quantity);
     toast.success(t('addedToCart') || 'Added to cart');
   };
 
@@ -78,14 +89,7 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const discountPercentage = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
-
   const getCurrentImage = () => {
-    if (selectedColor && selectedColor.image) {
-      return selectedColor.image;
-    }
     if (product.images && product.images[activeImageIndex]) {
       return product.images[activeImageIndex];
     }
@@ -100,7 +104,7 @@ const ProductDetail: React.FC = () => {
           <div className="aspect-square overflow-hidden rounded-lg border border-[var(--border-color)]">
             <img
               src={getCurrentImage()}
-              alt={isRTL ? product.nameAr : product.name}
+              alt={isRTL ? product.name_ar : product.name_en}
               className="w-full h-full object-cover cursor-zoom-in hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 e.currentTarget.src = 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image';
@@ -121,7 +125,7 @@ const ProductDetail: React.FC = () => {
                 >
                   <img
                     src={image || 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail'}
-                    alt={`${isRTL ? product.nameAr : product.name} ${index + 1}`}
+                    alt={`${isRTL ? product.name_ar : product.name_en} ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail';
@@ -136,45 +140,15 @@ const ProductDetail: React.FC = () => {
         {/* Product Information */}
         <div className="space-y-6">
           <div>
-            <p className="text-sm text-[var(--secondary-text-color)] mb-2 font-english">
-              {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
-            </p>
             <h1 className="text-3xl font-bold text-[var(--text-color)] mb-4 font-english">
-              {isRTL ? product.nameAr : product.name}
+              {isRTL ? product.name_ar : product.name_en}
             </h1>
-
-            {/* Rating */}
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < Math.floor(product.rating) ? 'text-yellow-400 dark:text-yellow-300 fill-current' : 'text-[var(--secondary-text-color)]'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-[var(--secondary-text-color)] font-english">
-                {product.rating} ({product.reviewCount} {t('reviews') || 'reviews'})
-              </span>
-            </div>
 
             {/* Price */}
             <div className="flex items-center space-x-4 mb-6">
               <span className="text-3xl font-bold text-[var(--text-color)] font-english">
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice && (
-                <>
-                  <span className="text-xl text-[var(--secondary-text-color)] line-through font-english">
-                    {formatPrice(product.originalPrice)}
-                  </span>
-                  <span className="bg-[var(--primary-color)] text-[var(--cream-white-500)] text-sm px-3 py-1 rounded-full font-english font-medium">
-                    {discountPercentage}% OFF
-                  </span>
-                </>
-              )}
             </div>
           </div>
 
@@ -184,61 +158,64 @@ const ProductDetail: React.FC = () => {
               {t('description') || 'Description'}
             </h3>
             <p className="text-[var(--secondary-text-color)] font-english leading-relaxed">
-              {isRTL ? product.descriptionAr : product.description}
+              {isRTL ? product.description_ar : product.description_en}
             </p>
           </div>
 
           {/* Color Selection */}
-          <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
-              {t('selectColor') || 'Select Color'}
-            </h3>
-            <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
-              {product.colors.map((color, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedColor(color)}
-                  className={`relative w-12 h-12 rounded-full border-4 hover:bg-[var(--hover-bg-color)] transition-all ${
-                    selectedColor?.name === color.name ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
-                  }`}
-                  style={{ backgroundColor: color.hex }}
-                  title={isRTL ? color.nameAr : color.name}
-                >
-                  {selectedColor?.name === color.name && (
-                    <div className="absolute inset-0 rounded-full border-2 border-[var(--cream-white-500)]/80" />
-                  )}
-                </button>
-              ))}
+          {product.colors && (
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
+                {t('selectColor') || 'Select Color'}
+              </h3>
+              <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
+                {Object.keys(product.colors).map((color, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedColor(color)}
+                    className={`relative w-12 h-12 rounded-full border-4 hover:bg-[var(--hover-bg-color)] transition-all ${
+                      selectedColor === color ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
+                    }`}
+                    style={{ backgroundColor: color }}
+                    title={color}
+                  >
+                    {selectedColor === color && (
+                      <div className="absolute inset-0 rounded-full border-2 border-[var(--cream-white-500)]/80" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              {selectedColor && (
+                <p className="text-sm text-[var(--secondary-text-color)] mt-2 font-english">
+                  {selectedColor}
+                </p>
+              )}
             </div>
-            {selectedColor && (
-              <p className="text-sm text-[var(--secondary-text-color)] mt-2 font-english">
-                {isRTL ? selectedColor.nameAr : selectedColor.name}
-              </p>
-            )}
-          </div>
+          )}
 
           {/* Size Selection */}
-          <div>
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
-              {t('selectSize') || 'Select Size'}
-            </h3>
-            <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'direction-rtl' : ''}`}>
-              {product.sizes.map((size) => (
-                <button
-                  key={size.name}
-                  onClick={() => setSelectedSize(size)}
-                  className={`py-3 px-4 border rounded-lg text-center transition-all hover:bg-[var(--hover-bg-color)] flex flex-col items-center font-english ${
-                    selectedSize?.name === size.name
-                      ? 'bg-[var(--primary-color)] text-[var(--cream-white-500)] border-[var(--primary-color)]'
-                      : 'border-[var(--border-color)] text-[var(--text-color)]'
-                  }`}
-                >
-                  <span className="font-medium">{size.name}</span>
-                  <span className="text-xs opacity-75">{size.cm} cm</span>
-                </button>
-              ))}
+          {product.sizes && (
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
+                {t('selectSize') || 'Select Size'}
+              </h3>
+              <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'direction-rtl' : ''}`}>
+                {Object.keys(product.sizes).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`py-3 px-4 border rounded-lg text-center transition-all hover:bg-[var(--hover-bg-color)] flex flex-col items-center font-english ${
+                      selectedSize === size
+                        ? 'bg-[var(--primary-color)] text-[var(--cream-white-500)] border-[var(--primary-color)]'
+                        : 'border-[var(--border-color)] text-[var(--text-color)]'
+                    }`}
+                  >
+                    <span className="font-medium">{size}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Quantity */}
           <div>
@@ -308,33 +285,6 @@ const ProductDetail: React.FC = () => {
             <div className="flex items-center space-x-3">
               <ShieldCheckIcon className="w-5 h-5 text-[var(--secondary-text-color)]" />
               <span className="text-sm text-[var(--secondary-text-color)] font-english">30-day return policy</span>
-            </div>
-          </div>
-
-          {/* Specifications */}
-          <div className="space-y-3 pt-6 border-t border-[var(--border-color)]">
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4 font-english">
-              {t('specifications') || 'Specifications'}
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-[var(--secondary-text-color)] font-english">{t('material') || 'Material'}</span>
-                <span className="font-medium text-[var(--text-color)] font-english">
-                  {isRTL ? product.materialAr : product.material}
-                </span>
-              </div>
-              {product.threadCount && (
-                <div className="flex justify-between">
-                  <span className="text-[var(--secondary-text-color)] font-english">{t('threadCount') || 'Thread Count'}</span>
-                  <span className="font-medium text-[var(--text-color)] font-english">{product.threadCount}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-[var(--secondary-text-color)] font-english">{t('careInstructions') || 'Care Instructions'}</span>
-                <span className="font-medium text-[var(--text-color)] font-english text-right max-w-xs">
-                  {isRTL ? product.careInstructionsAr : product.careInstructions}
-                </span>
-              </div>
             </div>
           </div>
         </div>

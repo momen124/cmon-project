@@ -20,13 +20,15 @@ export class CartService {
   }
 
   async addToCart(userId: string, addToCartDto: AddToCartDto): Promise<Cart> {
-    const { productId, quantity } = addToCartDto;
+    const { productId, quantity, selectedSize, selectedColor } = addToCartDto;
     const cartItem = await this.cartRepository.findOne({
       where: { userId, productId },
     });
 
     if (cartItem) {
       cartItem.quantity += quantity;
+      cartItem.selectedSize = selectedSize;
+      cartItem.selectedColor = selectedColor;
       return this.cartRepository.save(cartItem);
     }
 
@@ -34,6 +36,8 @@ export class CartService {
       userId,
       productId,
       quantity,
+      selectedSize,
+      selectedColor,
     });
     return this.cartRepository.save(newCartItem);
   }

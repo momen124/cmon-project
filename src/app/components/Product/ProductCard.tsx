@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import { Product } from '@/types';
-import { useStore } from '@/store/useStore';
+import { Product } from '@/app/types';
+import { useStore } from '@/app/store/useStore';
 
 interface ProductCardProps {
   product: Product;
@@ -26,8 +26,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Fixed: Use the correct structure from your types
-    addToCart(product, product.sizes[0]?.name || 'Standard', product.colors[0], 1);
+    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
+    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
+    addToCart(product, size, color, 1);
   };
 
   return (
@@ -35,21 +36,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
         {/* Product Image */}
         <div className="relative aspect-square bg-gradient-to-br from-base-100 to-base-200 flex items-center justify-center overflow-hidden">
-          <div className="text-6xl opacity-60">🛏️</div>
+          <img src={product.images?.[0] || 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image'} alt={isRTL ? product.name_ar : product.name_en} className="w-full h-full object-cover"/>
           
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.newArrival && (
-              <span className="bg-neutral-500 text-white text-xs px-2 py-1 rounded">New</span>
-            )}
-            {product.bestseller && (
-              <span className="bg-highlight-500 text-[var(--text-color)] text-xs px-2 py-1 rounded">Bestseller</span>
-            )}
-            {product.featured && (
-              <span className="bg-primary-500 text-white text-xs px-2 py-1 rounded">Featured</span>
-            )}
-          </div>
-
           {/* Wishlist Button */}
           <button
             onClick={(e) => {
@@ -80,49 +68,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Product Info */}
         <div className="p-4">
           <h3 className="font-semibold text-[var(--text-color)] mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {product.name}
+            {isRTL ? product.name_ar : product.name_en}
           </h3>
           <p className="text-sm text-[var(--text-color)] mb-2 line-clamp-2">
-            {product.description}
+            {isRTL ? product.description_ar : product.description_en}
           </p>
           
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-2">
-            <div className="flex text-yellow-400">
-              {Array.from({ length: 5 }, (_, i) => (
-                <span key={i} className={i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}>
-                  ★
-                </span>
-              ))}
-            </div>
-            <span className="text-xs text-[var(--secondary-text-color)">({product.reviewCount})</span>
-          </div>
-
           {/* Price */}
           <div className="flex items-center gap-2">
             <span className="font-bold text-lg text-[var(--text-color)]">
               ${product.price}
             </span>
-            {product.comparePrice && (
-              <span className="text-sm text-[var(--secondary-text-color) line-through">
-                ${product.comparePrice}
-              </span>
-            )}
-          </div>
-
-          {/* Colors */}
-          <div className="flex gap-1 mt-2">
-            {product.colors.slice(0, 4).map((color, index) => (
-              <div
-                key={index}
-                className="w-4 h-4 rounded-full border border-gray-300"
-                style={{ backgroundColor: color.hex }}
-                title={color.name}
-              />
-            ))}
-            {product.colors.length > 4 && (
-              <span className="text-xs text-[var(--secondary-text-color) ml-1">+{product.colors.length - 4}</span>
-            )}
           </div>
         </div>
       </div>

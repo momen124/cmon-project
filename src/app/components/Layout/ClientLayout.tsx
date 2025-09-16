@@ -6,10 +6,12 @@ import Header from '../common/Header';
 import Footer from '../common/Footer';
 import CartSidebar from '../Cart/CartSidebar';
 import { Toaster } from 'react-hot-toast';
+import { useStore } from '@/app/store/useStore';
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
   const params = useParams();
   const lang = params?.lang as string;
+  const { syncCart, user } = useStore();
 
   useEffect(() => {
     // Set the language and direction attributes on the document
@@ -18,6 +20,10 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     }
   }, [lang]);
+
+  useEffect(() => {
+    syncCart();
+  }, [user, syncCart]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background-color)] text-[var(--text-color)]">

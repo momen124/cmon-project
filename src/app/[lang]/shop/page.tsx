@@ -4,9 +4,9 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdjustmentsHorizontalIcon, Squares2X2Icon, ListBulletIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Product, Category } from '@/app/types';
-import { useStore } from '@/store/useStore';
-import ProductCard from '@/components/Product/ProductCard';
-import ProductListItem from '@/components/Product/ProductListItem';
+import { useStore } from '@/app/store/useStore';
+import ProductCard from '@/app/components/Product/ProductCard';
+import ProductListItem from '@/app/components/Product/ProductListItem';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -20,54 +20,50 @@ const Shop: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState('price-low');
   const [filters, setFilters] = useState({
     priceRange: [0, 5000],
-    colors: [] as string[],
-    sizes: [] as string[],
-    materials: [] as string[],
     inStock: false,
-    onSale: false,
   });
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const [productsRes, categoriesRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/categories'),
-      ]);
-      const [productsData, categoriesData] = await Promise.all([
-        productsRes.json(),
-        categoriesRes.json(),
-      ]);
-      setProducts(productsData);
-      setCategories(categoriesData);
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`),
+        ]);
+        const [productsData, categoriesData] = await Promise.all([
+          productsRes.json(),
+          categoriesRes.json(),
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
     };
     fetchData();
   }, []);
 
   const isRTL = language === 'ar';
 
-  const currentCategory = categories.find(cat => cat.slug === slug);
+  const currentCategory = categories.find(cat => cat.id === slug);
   
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
     if (currentCategory) {
-      filtered = filtered.filter(product => 
-        isRTL 
-          ? product.categoryAr === currentCategory.nameAr
-          : product.category === currentCategory.name
-      );
+      filtered = filtered.filter(product => product.category_id === currentCategory.id);
     }
 
     const searchQuery = searchParams.get('q');
     if (searchQuery) {
       filtered = filtered.filter(product =>
-        (isRTL ? product.nameAr : product.name)
+        (isRTL ? product.name_ar : product.name_en)
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        (isRTL ? product.descriptionAr : product.description)
+        (isRTL ? product.description_ar : product.description_en)
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -78,30 +74,12 @@ const Shop: React.FC = () => {
       product.price <= filters.priceRange[1]
     );
 
-    if (filters.colors.length > 0) {
-      filtered = filtered.filter(product =>
-        product.colors.some(color => 
-          filters.colors.includes(isRTL ? color.nameAr : color.name)
-        )
-      );
-    }
-
-    if (filters.sizes.length > 0) {
-      filtered = filtered.filter(product =>
-        product.sizes.some(size => filters.sizes.includes(size.name))
-      );
-    }
-
     if (filters.inStock) {
       filtered = filtered.filter(product => product.stock > 0);
     }
 
-    if (filters.onSale) {
-      filtered = filtered.filter(product => product.originalPrice);
-    }
-
     return filtered;
-  }, [currentCategory, searchParams, filters, isRTL]);
+  }, [products, currentCategory, searchParams, filters, isRTL]);
 
   const sortedProducts = useMemo(() => {
     const sorted = [...filteredProducts];
@@ -111,34 +89,10 @@ const Shop: React.FC = () => {
         return sorted.sort((a, b) => a.price - b.price);
       case 'price-high':
         return sorted.sort((a, b) => b.price - a.price);
-      case 'newest':
-        return sorted.sort((a, b) => (b.newArrival ? 1 : 0) - (a.newArrival ? 1 : 0));
-      case 'rating':
-        return sorted.sort((a, b) => b.rating - a.rating);
-      case 'popular':
-        return sorted.sort((a, b) => b.reviewCount - a.reviewCount);
       default:
-        return sorted.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        return sorted;
     }
   }, [filteredProducts, sortBy]);
-
-  const availableColors = useMemo(() => {
-    const colors = new Set<string>();
-    products.forEach(product => {
-      product.colors.forEach(color => {
-        colors.add(isRTL ? color.nameAr : color.name);
-      });
-    });
-    return Array.from(colors);
-  }, [isRTL]);
-
-  const availableSizes = useMemo(() => {
-    const sizes = new Set<string>();
-    products.forEach(product => {
-      product.sizes.forEach(size => sizes.add(size.name));
-    });
-    return Array.from(sizes);
-  }, []);
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -147,11 +101,7 @@ const Shop: React.FC = () => {
   const clearFilters = () => {
     setFilters({
       priceRange: [0, 5000],
-      colors: [],
-      sizes: [],
-      materials: [],
       inStock: false,
-      onSale: false,
     });
   };
 
@@ -163,7 +113,7 @@ const Shop: React.FC = () => {
           <span>/</span>
           {currentCategory ? (
             <span className="text-[var(--text-color)] font-english">
-              {isRTL ? currentCategory.nameAr : currentCategory.name}
+              {isRTL ? currentCategory.name_ar : currentCategory.name_en}
             </span>
           ) : (
             <span className="text-[var(--text-color)] font-english">{t('sop')}</span>
@@ -174,7 +124,7 @@ const Shop: React.FC = () => {
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-[var(--text-color)] mb-4 font-english">
           {currentCategory 
-            ? (isRTL ? currentCategory.nameAr : currentCategory.name)
+            ? (isRTL ? currentCategory.name_ar : currentCategory.name_en)
             : t('shop')
           }
         </h1>
@@ -215,52 +165,6 @@ const Shop: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('colors')}</h4>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {availableColors.map(color => (
-                  <label key={color} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.colors.includes(color)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          handleFilterChange('colors', [...filters.colors, color]);
-                        } else {
-                          handleFilterChange('colors', filters.colors.filter(c => c !== color));
-                        }
-                      }}
-                      className="rounded border-base-200 text-primary-600 focus:ring-highlight-500"
-                    />
-                    <span className={`text-sm font-english ${isRTL ? 'mr-2' : 'ml-2'}`}>{color}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('sizes')}</h4>
-              <div className="grid grid-cols-2 gap-2">
-                {availableSizes.map(size => (
-                  <label key={size} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.sizes.includes(size)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          handleFilterChange('sizes', [...filters.sizes, size]);
-                        } else {
-                          handleFilterChange('sizes', filters.sizes.filter(s => s !== size));
-                        }
-                      }}
-                      className="rounded border-base-200 text-primary-600 focus:ring-highlight-500"
-                    />
-                    <span className={`text-sm font-english ${isRTL ? 'mr-2' : 'ml-2'}`}>{size}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-6">
               <h4 className="font-medium text-[var(--text-color)] mb-3 font-english">{t('availability')}</h4>
               <div className="space-y-2">
                 <label className="flex items-center">
@@ -271,15 +175,6 @@ const Shop: React.FC = () => {
                     className="rounded border-base-200 text-primary-600 focus:ring-highlight-500"
                   />
                   <span className={`text-sm font-english ${isRTL ? 'mr-2' : 'ml-2'}`}>{t('inStockOnly')}</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={filters.onSale}
-                    onChange={(e) => handleFilterChange('onSale', e.target.checked)}
-                    className="rounded border-base-200 text-primary-600 focus:ring-highlight-500"
-                  />
-                  <span className={`text-sm font-english ${isRTL ? 'mr-2' : 'ml-2'}`}>{t('onSale')}</span>
                 </label>
               </div>
             </div>
@@ -324,12 +219,8 @@ const Shop: React.FC = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="border-base-200 rounded-lg text-sm text-[var(--text-color)] focus:ring-highlight-500 focus:border-primary-600 bg-secondary-50 font-english"
               >
-                <option value="featured">{t('featured')}</option>
-                <option value="newest">{t('newest')}</option>
                 <option value="price-low">{t('priceLowToHigh')}</option>
                 <option value="price-high">{t('priceHighToLow')}</option>
-                <option value="rating">{t('highestRated')}</option>
-                <option value="popular">{t('mostPopular')}</option>
               </select>
             </div>
           </div>

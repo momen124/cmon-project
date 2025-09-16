@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MinusIcon, PlusIcon, TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useStore } from '@/store/useStore';
+import { useStore } from '@/app/store/useStore';
 import { toast } from 'react-hot-toast';
 import AccountSidebar from '../account/AccountSidebar';
 
@@ -24,14 +24,14 @@ const Cart: React.FC = () => {
     return `${convertedPrice.toFixed(2)} ${symbol}`;
   };
 
-  const handleUpdateQuantity = (id: string, newQuantity: number) => {
+  const handleUpdateQuantity = (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    updateQuantity(id, newQuantity);
+    updateQuantity(productId, newQuantity);
     toast.success(t('quantityUpdated'));
   };
 
-  const handleRemoveFromCart = (id: string) => {
-    removeFromCart(id);
+  const handleRemoveFromCart = (productId: string) => {
+    removeFromCart(productId);
     toast.success(t('removedFromCart'));
   };
 
@@ -90,8 +90,8 @@ const Cart: React.FC = () => {
                     >
                       <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg border border-[var(--border-color)]">
                         <img
-                          src={item.color.image}
-                          alt={isRTL ? item.product.nameAr : item.product.name}
+                          src={item.product.images?.[0] || 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image'}
+                          alt={isRTL ? item.product.name_ar : item.product.name_en}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
@@ -99,14 +99,11 @@ const Cart: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <Link href={`/${language}/product/${item.product.id}`}>
                           <h3 className="text-lg font-semibold text-[var(--text-color)] hover:text-[var(--primary-color)] transition-colors font-english">
-                            {isRTL ? item.product.nameAr : item.product.name}
+                            {isRTL ? item.product.name_ar : item.product.name_en}
                           </h3>
                         </Link>
                         <p className="text-sm text-[var(--secondary-text-color)] mt-1 font-english">
-                          {isRTL ? item.color.nameAr : item.color.name} • {item.size}
-                        </p>
-                        <p className="text-sm text-[var(--secondary-text-color)] mt-1 font-english">
-                          {isRTL ? item.product.materialAr : item.product.material}
+                          {item.color?.name} • {item.size}
                         </p>
                         <div className="mt-2 lg:hidden">
                           <p className="text-lg font-bold text-[var(--text-color)] font-english">
@@ -117,7 +114,7 @@ const Cart: React.FC = () => {
 
                       <div className={`flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => handleUpdateQuantity(item.product.id, item.quantity - 1)}
                           className="p-1 border border-[var(--border-color)] rounded hover:bg-[var(--hover-bg-color)] transition-colors"
                           disabled={item.quantity <= 1}
                           aria-label={t('decreaseQuantity')}
@@ -128,7 +125,7 @@ const Cart: React.FC = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleUpdateQuantity(item.product.id, item.quantity + 1)}
                           className="p-1 border border-[var(--border-color)] rounded hover:bg-[var(--hover-bg-color)] transition-colors"
                           disabled={item.quantity >= item.product.stock}
                           aria-label={t('increaseQuantity')}
@@ -149,7 +146,7 @@ const Cart: React.FC = () => {
                       </div>
 
                       <button
-                        onClick={() => handleRemoveFromCart(item.id)}
+                        onClick={() => handleRemoveFromCart(item.product.id)}
                         className="p-2 text-red-600 dark:text-red-400 dark:text-red-300 hover:bg-[var(--hover-bg-color)] rounded transition-colors"
                         aria-label={t('removeItem')}
                       >

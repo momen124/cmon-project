@@ -1,11 +1,13 @@
+'use client';
+
 import React from 'react';
-import { HeartIcon, StarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import { Product } from '@/types';
-import { useStore } from '@/store/useStore';
+import { Product } from '@/app/types';
+import { useStore } from '@/app/store/useStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import Link from 'next/link';
 
 interface ProductListItemProps {
   product: Product;
@@ -40,16 +42,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
       toast.error(t('outOfStock'));
       return;
     }
-    if (!product.sizes || product.sizes.length === 0) {
-      toast.error(t('selectSize'));
-      return;
-    }
-    if (!product.colors || product.colors.length === 0) {
-      toast.error(t('selectColor'));
-      return;
-    }
+    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
+    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
     try {
-      addToCart(product, product.sizes[0].name, product.colors[0], 1);
+      addToCart(product, size, color, 1);
       toast.success(t('addedToCart'));
     } catch (error) {
       toast.error(t('cartError') || 'Failed to add to cart');
@@ -57,36 +53,18 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
     }
   };
 
-  const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
-
   return (
     <div className="group bg-secondary-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-base-200 animate-slide-up">
       <div className="flex p-4">
         {/* Product Image */}
         <div className="flex-shrink-0 w-48 h-48 relative overflow-hidden rounded-lg bg-gradient-to-br from-base-100 to-base-200">
-          <Link href={`/product/${product.id}`}>
+          <Link href={`/${language}/product/${product.id}`}>
             <img
               src={product.images[0] || "/placeholder.svg"}
-              alt={isRTL ? product.nameAr : product.name}
+              alt={isRTL ? product.name_ar : product.name_en}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
-          
-          {/* Badges */}
-          <div className={`absolute top-3 flex flex-col gap-2 ${isRTL ? 'right-3' : 'left-3'}`}>
-            {product.newArrival && (
-              <span className="bg-neutral-500 text-white text-xs px-2 py-1 rounded-full font-english">
-                {t('new')}
-              </span>
-            )}
-            {discountPercentage > 0 && (
-              <span className="bg-highlight-500 text-[var(--text-color)] text-xs px-2 py-1 rounded-full font-english">
-                {discountPercentage}% {t('off')}
-              </span>
-            )}
-          </div>
         </div>
 
         {/* Product Details */}
@@ -94,12 +72,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
           <div>
             <div className="flex items-start justify-between mb-1">
               <div>
-                <div className="text-sm text-base-600 mb-2 font-english">
-                  {(isRTL ? product.categoryAr : product.category)?.replace("-", " ").toUpperCase()}
-                </div>
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/${language}/product/${product.id}`}>
                   <h3 className="text-xl font-bold text-[var(--text-color)] mb-4 group-hover:text-primary-600 transition-colors font-english">
-                    {isRTL ? product.nameAr : product.name}
+                    {isRTL ? product.name_ar : product.name_en}
                   </h3>
                 </Link>
               </div>
@@ -116,39 +91,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
             </div>
 
             <p className="text-base-600 mb-4 line-clamp-2 font-english">
-              {isRTL ? product.descriptionAr : product.description}
+              {isRTL ? product.description_ar : product.description_en}
             </p>
-
-            {/* Rating */}
-            {product.rating && (
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-base-300'}`}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-base-600 font-english">
-                  {product.rating} ({product.reviewCount} {t('reviews')})
-                </span>
-              </div>
-            )}
-
-            {/* Specifications */}
-            <div className={`space-y-3 ${isRTL ? 'space-x-reverse' : ''}`}>
-              <div className="flex justify-between">
-                <span className="text-base-600 font-english">{t('material')}</span>
-                <span className="font-medium text-[var(--text-color)] font-english">{isRTL ? product.materialAr : product.material}</span>
-              </div>
-              {product.threadCount && (
-                <div className="flex justify-between">
-                  <span className="text-base-600 font-english">{t('threadCount')}</span>
-                  <span className="font-medium text-[var(--text-color)] font-english">{product.threadCount}</span>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Price and Actions */}
@@ -157,11 +101,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               <span className="text-3xl font-bold text-[var(--text-color)] font-english">
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice && (
-                <span className="text-xl text-base-500 line-through font-english">
-                  {formatPrice(product.originalPrice)}
-                </span>
-              )}
             </div>
 
             <div className={`flex items-center space-x-4 ${isRTL ? 'space-x-reverse' : ''}`}>
