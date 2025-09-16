@@ -1,41 +1,16 @@
 export interface Product {
   id: string;
-  name: string;
-  nameAr: string;
-  description: string;
-  descriptionAr: string;
+  name_en: string;
+  name_ar: string;
+  description_en: string;
+  description_ar: string;
   price: number;
-  originalPrice?: number;
-  images: string[];
-  category: string;
-  categoryAr: string;
-  subcategory?: string;
-  sizes: Size[];
-  colors: ProductColor[];
   stock: number;
-  threadCount?: number;
-  material: string;
-  materialAr: string;
-  careInstructions: string;
-  careInstructionsAr: string;
-  featured: boolean;
-  bestseller: boolean;
-  newArrival: boolean;
-  rating: number;
-  reviewCount: number;
-  comparePrice?: number;
-}
-
-export interface Size {
-  name: string;
-  cm: string;
-}
-
-export interface ProductColor {
-  name: string;
-  nameAr: string;
-  hex: string;
-  image: string;
+  category_id: string;
+  sizes: object;
+  colors: object;
+  images: string[];
+  view_count: number;
 }
 
 export interface CartItem {
@@ -43,22 +18,14 @@ export interface CartItem {
   product: Product;
   quantity: number;
   size: string;
-  color: ProductColor;
+  color: string;
 }
 
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  addresses: Address[];
-  orders: Order[];
-  wishlist: string[];
-  loyaltyPoints: number;
-  totalOrders: number; // Added
-  totalSpent: number; // Added
-  memberSince: string; // Added
+  name: string;
+  role: string;
 }
 
 export interface Address {
@@ -92,10 +59,6 @@ export interface Order {
 
 export interface Category {
   id: string;
-  name: string;
-  nameAr: string;
-  slug: string;
-  children?: Category[];
-  image?: string;
-  description?: string;
+  name_en: string;
+  name_ar: string;
 }

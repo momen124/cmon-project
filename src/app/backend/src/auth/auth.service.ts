@@ -97,10 +97,11 @@ export class AuthService {
 
       await this.passwordResetTokenRepository.save(resetToken);
 
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
       await this.emailService.sendMail(
         user.email,
         'Password Reset Request',
-        `Here is your password reset token: ${token}`,
+        `Click here to reset your password: ${resetLink}`,
       );
 
       return { message: 'If a user with this email exists, a password reset link has been sent.' };
