@@ -34,7 +34,7 @@ const Search: React.FC = () => {
     const filtered = products.filter(product => {
       const name = isRTL ? product.nameAr : product.name;
       const description = isRTL ? product.descriptionAr : product.description;
-      const category = isRTL ? product.categoryAr : product.category;
+      const category = isRTL ? product.categoryAr ?? product.category : product.category;
       const material = isRTL ? product.materialAr : product.material;
 
       return (
