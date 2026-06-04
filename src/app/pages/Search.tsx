@@ -31,19 +31,20 @@ const Search: React.FC = () => {
     }
 
     const query = searchQuery.toLowerCase();
+    const normalize = (value?: string) => value?.toLowerCase() ?? '';
     const filtered = products.filter(product => {
       const name = isRTL ? product.nameAr : product.name;
       const description = isRTL ? product.descriptionAr : product.description;
       const category = isRTL ? product.categoryAr ?? product.category : product.category;
-      const material = isRTL ? product.materialAr : product.material;
+      const material = isRTL ? product.materialAr ?? product.material : product.material;
 
       return (
-        name.toLowerCase().includes(query) ||
-        description.toLowerCase().includes(query) ||
-        category.toLowerCase().includes(query) ||
-        material.toLowerCase().includes(query) ||
+        normalize(name).includes(query) ||
+        normalize(description).includes(query) ||
+        normalize(category).includes(query) ||
+        normalize(material).includes(query) ||
         product.colors.some(color => 
-          (isRTL ? color.nameAr : color.name).toLowerCase().includes(query)
+          normalize(isRTL ? color.nameAr : color.name).includes(query)
         )
       );
     });
@@ -63,8 +64,8 @@ const Search: React.FC = () => {
         return filtered.sort((a, b) => {
           const aName = isRTL ? a.nameAr : a.name;
           const bName = isRTL ? b.nameAr : b.name;
-          const aNameMatch = aName.toLowerCase().includes(query);
-          const bNameMatch = bName.toLowerCase().includes(query);
+          const aNameMatch = normalize(aName).includes(query);
+          const bNameMatch = normalize(bName).includes(query);
           
           if (aNameMatch && !bNameMatch) return -1;
           if (!aNameMatch && bNameMatch) return 1;
