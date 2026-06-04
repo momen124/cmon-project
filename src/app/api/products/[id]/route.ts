@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { products } from '../../../../data/mockData';
+import { products } from '../../../data/mockData';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = params.id;
+  const { id } = await params;
   const product = products.find((p) => p.id === id);
 
   if (product) {

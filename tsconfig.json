@@ -35,8 +35,9 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-, "src/app/components/account/g"  ],
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/app/backend"
   ]
 }

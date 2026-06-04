@@ -7,6 +7,14 @@ import { CreditCardIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/
 import { useStore } from '@/store/useStore';
 import { toast } from 'react-hot-toast';
 
+/** Extract a usable image src from a StaticImageData object or plain string */
+function getImageSrc(image: any, fallback: string): string {
+  if (!image) return fallback;
+  if (typeof image === 'string') return image;
+  if (typeof image === 'object' && image.src) return image.src as string;
+  return fallback;
+}
+
 const Checkout: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -469,7 +477,7 @@ const Checkout: React.FC = () => {
                     }`}
                   >
                     <img
-                      src={item.color.image}
+                      src={getImageSrc(item.product.images?.[0], '/placeholder.svg')}
                       alt={isRTL ? item.product.nameAr : item.product.name}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
@@ -478,7 +486,7 @@ const Checkout: React.FC = () => {
                         {isRTL ? item.product.nameAr : item.product.name}
                       </h4>
                       <p className="text-sm text-[var(--secondary-text-color)] font-english">
-                        {isRTL ? item.color.nameAr : item.color.name} • {item.size}
+                        {item.color} • {item.size}
                       </p>
                       <p className="text-sm text-[var(--secondary-text-color)] font-english">
                         {t('qty')}: {item.quantity}

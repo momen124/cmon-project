@@ -6,8 +6,8 @@ import { StarIcon, HeartIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon } from
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { Product } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
+import { Product } from '@/types';
+import { useStore } from '@/store/useStore';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id:string }>();
@@ -27,11 +27,11 @@ const ProductDetail: React.FC = () => {
           if (res.ok) {
             const data = await res.json();
             setProduct(data);
-            if (data.sizes) {
-              setSelectedSize(Object.keys(data.sizes)[0]);
+            if (data.sizes?.length) {
+              setSelectedSize(data.sizes[0].name);
             }
-            if (data.colors) {
-              setSelectedColor(Object.keys(data.colors)[0]);
+            if (data.colors?.length) {
+              setSelectedColor(data.colors[0].name);
             }
           } else {
             setProduct(null);
@@ -90,10 +90,19 @@ const ProductDetail: React.FC = () => {
   };
 
   const getCurrentImage = () => {
-    if (product.images && product.images[activeImageIndex]) {
-      return product.images[activeImageIndex];
+    const img = product.images && product.images[activeImageIndex];
+    if (img) {
+      if (typeof img === 'string') return img;
+      if (typeof img === 'object' && (img as any).src) return (img as any).src as string;
     }
     return 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image';
+  };
+
+  const getImageSrc = (image: any, fallback: string): string => {
+    if (!image) return fallback;
+    if (typeof image === 'string') return image;
+    if (typeof image === 'object' && image.src) return image.src as string;
+    return fallback;
   };
 
   return (
@@ -104,7 +113,7 @@ const ProductDetail: React.FC = () => {
           <div className="aspect-square overflow-hidden rounded-lg border border-[var(--border-color)]">
             <img
               src={getCurrentImage()}
-              alt={isRTL ? product.name_ar : product.name_en}
+              alt={isRTL ? product.nameAr : product.name}
               className="w-full h-full object-cover cursor-zoom-in hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 e.currentTarget.src = 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image';
@@ -124,8 +133,8 @@ const ProductDetail: React.FC = () => {
                   }`}
                 >
                   <img
-                    src={image || 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail'}
-                    alt={`${isRTL ? product.name_ar : product.name_en} ${index + 1}`}
+                    src={getImageSrc(image, 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail')}
+                    alt={`${isRTL ? product.nameAr : product.name} ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = 'https://placehold.co/200x200/1f2937/e5e7eb/png?text=Thumbnail';
@@ -141,7 +150,7 @@ const ProductDetail: React.FC = () => {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold text-[var(--text-color)] mb-4 font-english">
-              {isRTL ? product.name_ar : product.name_en}
+              {isRTL ? product.nameAr : product.name}
             </h1>
 
             {/* Price */}
@@ -158,28 +167,28 @@ const ProductDetail: React.FC = () => {
               {t('description') || 'Description'}
             </h3>
             <p className="text-[var(--secondary-text-color)] font-english leading-relaxed">
-              {isRTL ? product.description_ar : product.description_en}
+              {isRTL ? product.descriptionAr : product.description}
             </p>
           </div>
 
           {/* Color Selection */}
-          {product.colors && (
+          {product.colors?.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
                 {t('selectColor') || 'Select Color'}
               </h3>
               <div className={`flex space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
-                {Object.keys(product.colors).map((color, index) => (
+                {product.colors.map((color, index) => (
                   <button
                     key={index}
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => setSelectedColor(color.name)}
                     className={`relative w-12 h-12 rounded-full border-4 hover:bg-[var(--hover-bg-color)] transition-all ${
-                      selectedColor === color ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
+                      selectedColor === color.name ? 'border-[var(--primary-color)]' : 'border-[var(--border-color)]'
                     }`}
-                    style={{ backgroundColor: color }}
-                    title={color}
+                    style={{ backgroundColor: color.hex }}
+                    title={isRTL ? color.nameAr : color.name}
                   >
-                    {selectedColor === color && (
+                    {selectedColor === color.name && (
                       <div className="absolute inset-0 rounded-full border-2 border-[var(--cream-white-500)]/80" />
                     )}
                   </button>
@@ -194,23 +203,24 @@ const ProductDetail: React.FC = () => {
           )}
 
           {/* Size Selection */}
-          {product.sizes && (
+          {product.sizes?.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3 font-english">
                 {t('selectSize') || 'Select Size'}
               </h3>
               <div className={`grid grid-cols-2 gap-3 ${isRTL ? 'direction-rtl' : ''}`}>
-                {Object.keys(product.sizes).map((size) => (
+                {product.sizes.map((size) => (
                   <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
+                    key={size.name}
+                    onClick={() => setSelectedSize(size.name)}
                     className={`py-3 px-4 border rounded-lg text-center transition-all hover:bg-[var(--hover-bg-color)] flex flex-col items-center font-english ${
-                      selectedSize === size
+                      selectedSize === size.name
                         ? 'bg-[var(--primary-color)] text-[var(--cream-white-500)] border-[var(--primary-color)]'
                         : 'border-[var(--border-color)] text-[var(--text-color)]'
                     }`}
                   >
-                    <span className="font-medium">{size}</span>
+                    <span className="font-medium">{size.name}</span>
+                    {size.cm && <span className="text-xs opacity-70">{size.cm} cm</span>}
                   </button>
                 ))}
               </div>

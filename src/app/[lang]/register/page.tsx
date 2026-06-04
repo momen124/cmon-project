@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-=======
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
->>>>>>> feat/auth-pages-ui
-import { Button } from "@/app/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-<<<<<<< HEAD
-
-export default function RegisterPage() {
-=======
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from 'react-hot-toast';
 
 export default function RegisterPage() {
@@ -53,7 +46,6 @@ export default function RegisterPage() {
     }
   };
 
->>>>>>> feat/auth-pages-ui
   return (
     <div className="flex justify-center items-center h-screen">
       <Card className="w-full max-w-sm">
@@ -61,24 +53,6 @@ export default function RegisterPage() {
           <CardTitle className="text-2xl">Register</CardTitle>
         </CardHeader>
         <CardContent>
-<<<<<<< HEAD
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input id="confirm-password" type="password" required />
-=======
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
@@ -121,16 +95,11 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
->>>>>>> feat/auth-pages-ui
             </div>
             <Button type="submit" className="w-full">
               Create an account
             </Button>
-<<<<<<< HEAD
-          </div>
-=======
           </form>
->>>>>>> feat/auth-pages-ui
         </CardContent>
       </Card>
     </div>

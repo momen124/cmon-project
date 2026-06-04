@@ -3,10 +3,10 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdjustmentsHorizontalIcon, Squares2X2Icon, ListBulletIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { Product, Category } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
-import ProductCard from '@/app/components/Product/ProductCard';
-import ProductListItem from '@/app/components/Product/ProductListItem';
+import { Product, Category } from '@/types';
+import { useStore } from '@/store/useStore';
+import ProductCard from '@/components/Product/ProductCard';
+import ProductListItem from '@/components/Product/ProductListItem';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -54,16 +54,16 @@ const Shop: React.FC = () => {
     let filtered = products;
 
     if (currentCategory) {
-      filtered = filtered.filter(product => product.category_id === currentCategory.id);
+      filtered = filtered.filter(product => product.category === currentCategory.name);
     }
 
     const searchQuery = searchParams.get('q');
     if (searchQuery) {
       filtered = filtered.filter(product =>
-        (isRTL ? product.name_ar : product.name_en)
+        (isRTL ? product.nameAr : product.name)
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        (isRTL ? product.description_ar : product.description_en)
+        (isRTL ? product.descriptionAr : product.description)
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -113,7 +113,7 @@ const Shop: React.FC = () => {
           <span>/</span>
           {currentCategory ? (
             <span className="text-[var(--text-color)] font-english">
-              {isRTL ? currentCategory.name_ar : currentCategory.name_en}
+              {isRTL ? currentCategory.nameAr : currentCategory.name}
             </span>
           ) : (
             <span className="text-[var(--text-color)] font-english">{t('sop')}</span>
@@ -124,7 +124,7 @@ const Shop: React.FC = () => {
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-[var(--text-color)] mb-4 font-english">
           {currentCategory 
-            ? (isRTL ? currentCategory.name_ar : currentCategory.name_en)
+            ? (isRTL ? currentCategory.nameAr : currentCategory.name)
             : t('shop')
           }
         </h1>

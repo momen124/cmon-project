@@ -1,14 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from "@/app/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
+import { useRouter, useParams } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from 'react-hot-toast';
 
-export default function ResetPasswordPage({ params }: { params: { token: string } }) {
+export default function ResetPasswordPage() {
+  const params = useParams<{ token: string }>();
+  const token = params?.token;
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
@@ -27,7 +29,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token: params.token, newPassword: password }),
+        body: JSON.stringify({ token: token, newPassword: password }),
       });
 
       const data = await response.json();

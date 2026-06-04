@@ -148,7 +148,10 @@ const CartSidebar: React.FC = () => {
                                         </p>
                                       </div>
                                       <p className="mt-1 text-sm text-[var(--secondary-text-color)] font-english">
-                                        {isRTL ? item.color.nameAr : item.color.name} • {item.size}
+                                        {(() => {
+                                          const colorObj = item.product.colors?.find(c => c.name === item.color || c.nameAr === item.color);
+                                          return colorObj ? (isRTL ? colorObj.nameAr : colorObj.name) : item.color;
+                                        })()} • {item.size}
                                       </p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">

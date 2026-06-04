@@ -23,7 +23,7 @@ interface StoreState {
   setAccessToken: (token: string | null) => void;
 
   // Wishlist
-  wishlist: Product[];
+  wishlist: string[];
   addToWishlist: (productId: string) => void;
   removeFromWishlist: (productId: string) => void;
   syncWishlist: () => void;
@@ -70,7 +70,7 @@ export const useStore = create<StoreState>()(
 
           get().syncCart();
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error instanceof Error ? error.message : 'An error occurred');
         }
       },
 
@@ -92,7 +92,7 @@ export const useStore = create<StoreState>()(
 
           get().syncCart();
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error instanceof Error ? error.message : 'An error occurred');
         }
       },
 
@@ -121,7 +121,7 @@ export const useStore = create<StoreState>()(
 
           get().syncCart();
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error instanceof Error ? error.message : 'An error occurred');
         }
       },
 
@@ -159,7 +159,7 @@ export const useStore = create<StoreState>()(
           }));
           set({ cart: frontendCart });
         } catch (error) {
-          console.error(error.message);
+          console.error(error instanceof Error ? error.message : 'An error occurred');
           set({ cart: [] });
         }
       },
@@ -193,7 +193,7 @@ export const useStore = create<StoreState>()(
           }
           get().syncWishlist();
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error instanceof Error ? error.message : 'An error occurred');
         }
       },
       removeFromWishlist: async (productId) => {
@@ -213,7 +213,7 @@ export const useStore = create<StoreState>()(
           }
           get().syncWishlist();
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error instanceof Error ? error.message : 'An error occurred');
         }
       },
       syncWishlist: async () => {
@@ -235,10 +235,10 @@ export const useStore = create<StoreState>()(
           }
 
           const backendWishlist = await response.json();
-          const frontendWishlist: Product[] = backendWishlist.map((item: any) => item.product);
+          const frontendWishlist: string[] = backendWishlist.map((item: any) => item.productId || item.product?.id || item.id);
           set({ wishlist: frontendWishlist });
         } catch (error) {
-          console.error(error.message);
+          console.error(error instanceof Error ? error.message : 'An error occurred');
           set({ wishlist: [] });
         }
       },

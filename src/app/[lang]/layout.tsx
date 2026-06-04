@@ -8,13 +8,14 @@ export function generateStaticParams() {
   return languages.map((lang) => ({ lang }))
 }
 
-export default function LangLayout({
+export default async function LangLayout({
   children,
-  params: { lang }
+  params
 }: {
   children: React.ReactNode
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }) {
+  const { lang } = await params;
   if (!languages.includes(lang)) {
     notFound()
   }

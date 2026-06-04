@@ -2,15 +2,24 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import { Product } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
+import { Product } from '@/types';
+import { useStore } from '@/store/useStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 
 interface ProductListItemProps {
   product: Product;
+}
+
+/** Extract a usable image src from a StaticImageData object or plain string */
+function getImageSrc(image: any, fallback: string): string {
+  if (!image) return fallback;
+  if (typeof image === 'string') return image;
+  if (typeof image === 'object' && image.src) return image.src as string;
+  return fallback;
 }
 
 const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
@@ -42,8 +51,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
       toast.error(t('outOfStock'));
       return;
     }
-    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
-    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
+    const size = product.sizes?.length ? product.sizes[0].name : 'Standard';
+    const color = product.colors?.length ? product.colors[0].name : 'Default';
     try {
       addToCart(product, size, color, 1);
       toast.success(t('addedToCart'));
@@ -60,8 +69,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
         <div className="flex-shrink-0 w-48 h-48 relative overflow-hidden rounded-lg bg-gradient-to-br from-base-100 to-base-200">
           <Link href={`/${language}/product/${product.id}`}>
             <img
-              src={product.images[0] || "/placeholder.svg"}
-              alt={isRTL ? product.name_ar : product.name_en}
+              src={getImageSrc(product.images[0], '/placeholder.svg')}
+              alt={isRTL ? product.nameAr : product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
@@ -74,7 +83,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               <div>
                 <Link href={`/${language}/product/${product.id}`}>
                   <h3 className="text-xl font-bold text-[var(--text-color)] mb-4 group-hover:text-primary-600 transition-colors font-english">
-                    {isRTL ? product.name_ar : product.name_en}
+                    {isRTL ? product.nameAr : product.name}
                   </h3>
                 </Link>
               </div>
@@ -91,7 +100,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
             </div>
 
             <p className="text-base-600 mb-4 line-clamp-2 font-english">
-              {isRTL ? product.description_ar : product.description_en}
+              {isRTL ? product.descriptionAr : product.description}
             </p>
           </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
-import { Product } from '@/app/types';
+import { Product } from '@/types';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/Product/ProductCard';
 

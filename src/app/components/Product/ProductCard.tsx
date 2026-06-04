@@ -2,18 +2,28 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import { Product } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
+import { Product } from '@/types';
+import { useStore } from '@/store/useStore';
 
 interface ProductCardProps {
   product: Product;
 }
 
+/** Extract a usable image src from a StaticImageData object or plain string */
+function getImageSrc(image: any, fallback: string): string {
+  if (!image) return fallback;
+  if (typeof image === 'string') return image;
+  if (typeof image === 'object' && image.src) return image.src as string;
+  return fallback;
+}
+
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { language, wishlist, addToWishlist, removeFromWishlist, addToCart } = useStore();
   const isWishlisted = wishlist.includes(product.id);
+  const isRTL = language === 'ar';
 
   const handleWishlistToggle = () => {
     if (isWishlisted) {
@@ -26,8 +36,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
-    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
+    const size = product.sizes?.length ? product.sizes[0].name : 'Standard';
+    const color = product.colors?.length ? product.colors[0].name : 'Default';
     addToCart(product, size, color, 1);
   };
 
@@ -36,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
         {/* Product Image */}
         <div className="relative aspect-square bg-gradient-to-br from-base-100 to-base-200 flex items-center justify-center overflow-hidden">
-          <img src={product.images?.[0] || 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image'} alt={isRTL ? product.name_ar : product.name_en} className="w-full h-full object-cover"/>
+          <img src={getImageSrc(product.images?.[0], 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image')} alt={isRTL ? product.nameAr : product.name} className="w-full h-full object-cover"/>
           
           {/* Wishlist Button */}
           <button
@@ -68,10 +78,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Product Info */}
         <div className="p-4">
           <h3 className="font-semibold text-[var(--text-color)] mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {isRTL ? product.name_ar : product.name_en}
+            {isRTL ? product.nameAr : product.name}
           </h3>
           <p className="text-sm text-[var(--text-color)] mb-2 line-clamp-2">
-            {isRTL ? product.description_ar : product.description_en}
+            {isRTL ? product.descriptionAr : product.description}
           </p>
           
           {/* Price */}

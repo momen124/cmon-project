@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useStore } from '@/store/useStore';
-import { Category } from '@/app/types';
+import { Category } from '@/types';
 
 const CategorySection: React.FC = () => {
   const { language } = useStore();
@@ -117,7 +117,7 @@ const CategorySection: React.FC = () => {
                       {category.name}
                     </h3>
                     <p className="text-muted-600 dark:text-muted-300 leading-relaxed">
-                      {category.description}
+                      {(category as any).description ?? ''}
                     </p>
                     
                     {/* Call to Action */}

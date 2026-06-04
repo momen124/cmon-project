@@ -13,8 +13,8 @@ import {
   MagnifyingGlassIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
-import { useStore } from '@/app/store/useStore';
-import { Category } from '@/app/types';
+import { useStore } from '@/store/useStore';
+import { Category } from '@/types';
 import MegaMenu from '@/components/common/MegaMenu';
 import ThemeToggle from './ThemeToggle';
 import { toast } from 'react-hot-toast';
@@ -213,7 +213,7 @@ const Header: React.FC = () => {
                     href={`/${language}/shop?category=${category.id}`}
                     className={`flex items-center py-4 px-2 text-[var(--text-color)] dark:text-gray-100 hover:text-[var(--primary-color)] dark:hover:text-blue-400 transition-colors font-${isRTL ? 'arabic' : 'english'} hover-lift space-x-1 ${isRTL ? 'space-x-reverse' : ''}`}
                   >
-                    <span>{isRTL ? category.name_ar : category.name_en}</span>
+                    <span>{isRTL ? category.nameAr : category.name}</span>
                   </Link>
                 </div>
               ))}
@@ -252,7 +252,7 @@ const Header: React.FC = () => {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className={`font-${isRTL ? 'arabic' : 'english'}`}>
-                      {isRTL ? category.name_ar : category.name_en}
+                      {isRTL ? category.nameAr : category.name}
                     </span>
                   </Link>
                 </div>

@@ -1,17 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartIcon, ShoppingBagIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Product } from '@/app/types';
-import { useStore } from '@/app/store/useStore';
+import { Product } from '@/types';
+import { useStore } from '@/store/useStore';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
+
+/** Extract a usable image src from a StaticImageData object or plain string */
+function getImageSrc(image: any, fallback: string): string {
+  if (!image) return fallback;
+  if (typeof image === 'string') return image;
+  if (typeof image === 'object' && image.src) return image.src as string;
+  return fallback;
+}
 
 const Wishlist: React.FC = () => {
   const { t } = useTranslation();
   const { wishlist, removeFromWishlist, addToCart, language, currency } = useStore();
   const isRTL = language === 'ar';
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+        if (res.ok) {
+          setAllProducts(await res.json());
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Resolve wishlist IDs to full Product objects
+  const wishlistProducts = allProducts.filter((p) => wishlist.includes(p.id));
 
   const formatPrice = (price: number) => {
     const symbol = currency === 'EGP' ? 'ج.م' : currency === 'USD' ? '$' : '€';
@@ -29,8 +55,8 @@ const Wishlist: React.FC = () => {
       toast.error(t('outOfStock'));
       return;
     }
-    const size = product.sizes ? Object.keys(product.sizes)[0] : 'Standard';
-    const color = product.colors ? Object.keys(product.colors)[0] : 'Default';
+    const size = product.sizes?.length ? product.sizes[0].name : 'Standard';
+    const color = product.colors?.length ? product.colors[0].name : 'Default';
     try {
       addToCart(product, size, color, 1);
       toast.success(t('addedToCart'));
@@ -62,13 +88,13 @@ const Wishlist: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wishlist.map(product => (
+          {wishlistProducts.map(product => (
             <div key={product.id} className="bg-secondary-50 dark:bg-secondary-900 rounded-lg shadow-sm border border-base-200 dark:border-muted-700 hover:shadow-md transition-shadow duration-300">
               <div className="relative overflow-hidden rounded-t-lg">
                 <Link href={`/${language}/product/${product.id}`}>
                   <img
-                    src={product.images[0] || "/placeholder.svg"}
-                    alt={isRTL ? product.name_ar : product.name_en}
+                    src={getImageSrc(product.images[0], '/placeholder.svg')}
+                    alt={isRTL ? product.nameAr : product.name}
                     className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </Link>
@@ -85,7 +111,7 @@ const Wishlist: React.FC = () => {
               <div className="p-4">
                 <Link href={`/${language}/product/${product.id}`}>
                   <h3 className="font-semibold text-[var(--text-color)] dark:text-secondary-500 mb-2 hover:text-primary-600 dark:hover:text-primary-300 transition-colors line-clamp-2 font-english">
-                    {isRTL ? product.name_ar : product.name_en}
+                    {isRTL ? product.nameAr : product.name}
                   </h3>
                 </Link>
 

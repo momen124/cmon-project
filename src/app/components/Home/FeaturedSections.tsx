@@ -6,7 +6,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import ProductCard from '../Product/ProductCard';
 import { useStore } from '@/store/useStore';
-import { Product } from '@/app/types';
+import { Product } from '@/types';
 
 const FeaturedSections: React.FC = () => {
   const { language } = useStore();

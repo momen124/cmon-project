@@ -1,16 +1,34 @@
 export interface Product {
   id: string;
-  name_en: string;
-  name_ar: string;
-  description_en: string;
-  description_ar: string;
+  name: string;
+  nameAr: string;
+  description: string;
+  descriptionAr: string;
   price: number;
+  originalPrice?: number;
   stock: number;
-  category_id: string;
-  sizes: object;
-  colors: object;
-  images: string[];
-  view_count: number;
+  category: string;
+  categoryAr?: string;
+  subcategory?: string;
+  sizes: { name: string; cm: string }[];
+  colors: {
+    name: string;
+    nameAr: string;
+    hex: string;
+    image: any;
+  }[];
+  images: any[];
+  view_count?: number;
+  threadCount?: number;
+  material: string;
+  materialAr?: string;
+  careInstructions?: string;
+  careInstructionsAr?: string;
+  featured?: boolean;
+  bestseller?: boolean;
+  newArrival?: boolean;
+  rating?: number;
+  reviewCount?: number;
 }
 
 export interface CartItem {
@@ -71,6 +89,13 @@ export interface Order {
 
 export interface Category {
   id: string;
-  name_en: string;
-  name_ar: string;
+  name: string;
+  nameAr: string;
+  slug: string;
+  children?: {
+    id: string;
+    name: string;
+    nameAr: string;
+    slug: string;
+  }[];
 }

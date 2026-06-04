@@ -6,11 +6,12 @@ import Header from '../common/Header';
 import Footer from '../common/Footer';
 import CartSidebar from '../Cart/CartSidebar';
 import { Toaster } from 'react-hot-toast';
-import { useStore } from '@/app/store/useStore';
+import { useStore } from '@/store/useStore';
+import '@/i18n'; // initialize i18next before any useTranslation() calls
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
+export default function ClientLayout({ children, lang: propLang }: { children: ReactNode; lang?: string }) {
   const params = useParams();
-  const lang = params?.lang as string;
+  const lang = propLang || (params?.lang as string);
   const { syncCart, user, syncWishlist } = useStore();
 
   useEffect(() => {

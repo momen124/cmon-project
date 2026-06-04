@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 
 const OrdersPage: React.FC = () => {
   const { t } = useTranslation();
-  const { accessToken } = useStore();
+  const { accessToken, language } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -96,7 +96,7 @@ const OrdersPage: React.FC = () => {
                         <p className="font-medium text-[var(--text-color)]">{t('Items')}</p>
                         {order.orderItems.map((item) => (
                           <p key={item.id} className="text-sm text-[var(--secondary-text-color)]">
-                            {item.quantity}x {t(item.product.name_en)}
+                            {item.quantity}x {language === 'ar' ? item.product.nameAr : item.product.name}
                           </p>
                         ))}
                       </div>

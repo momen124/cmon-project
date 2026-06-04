@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MinusIcon, PlusIcon, TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useStore } from '@/app/store/useStore';
+import { useStore } from '../../store/useStore';
 import { toast } from 'react-hot-toast';
 import AccountSidebar from '../account/AccountSidebar';
 
@@ -91,7 +91,7 @@ const Cart: React.FC = () => {
                       <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg border border-[var(--border-color)]">
                         <img
                           src={item.product.images?.[0] || 'https://placehold.co/800x800/1f2937/e5e7eb/png?text=Product+Image'}
-                          alt={isRTL ? item.product.name_ar : item.product.name_en}
+                          alt={isRTL ? item.product.nameAr : item.product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
@@ -99,11 +99,14 @@ const Cart: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <Link href={`/${language}/product/${item.product.id}`}>
                           <h3 className="text-lg font-semibold text-[var(--text-color)] hover:text-[var(--primary-color)] transition-colors font-english">
-                            {isRTL ? item.product.name_ar : item.product.name_en}
+                            {isRTL ? item.product.nameAr : item.product.name}
                           </h3>
                         </Link>
                         <p className="text-sm text-[var(--secondary-text-color)] mt-1 font-english">
-                          {item.color?.name} • {item.size}
+                          {(() => {
+                            const colorObj = item.product.colors?.find(c => c.name === item.color || c.nameAr === item.color);
+                            return colorObj ? (isRTL ? colorObj.nameAr : colorObj.name) : item.color;
+                          })()} • {item.size}
                         </p>
                         <div className="mt-2 lg:hidden">
                           <p className="text-lg font-bold text-[var(--text-color)] font-english">
