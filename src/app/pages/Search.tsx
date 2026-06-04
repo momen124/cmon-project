@@ -57,9 +57,9 @@ const Search: React.FC = () => {
       case 'newest':
         return filtered.sort((a, b) => (b.newArrival ? 1 : 0) - (a.newArrival ? 1 : 0));
       case 'rating':
-        return filtered.sort((a, b) => b.rating - a.rating);
+        return filtered.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
       case 'popular':
-        return filtered.sort((a, b) => b.reviewCount - a.reviewCount);
+        return filtered.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
       default:
         return filtered.sort((a, b) => {
           const aName = isRTL ? a.nameAr : a.name;
